@@ -29,10 +29,22 @@
       "side": "BUY",
       "price": 66860.62,
       "quantity": 0.001
+    },
+    {
+      "time": 1775215009,
+      "side": "SELL",
+      "price": 66875.47,
+      "quantity": 0.001
+    },
+    {
+      "time": 1775215011,
+      "side": "BUY",
+      "price": 66877.99,
+      "quantity": 0.001
     }
   ],
-  "realizedPnl": -0.008399999999994176,
-  "totalWinningTrades": 1,
+  "realizedPnl": 0.006450000000011644,
+  "totalWinningTrades": 2,
   "totalLosingTrades": 1,
-  "lastBuyPrice": 66860.62
+  "lastBuyPrice": 66877.99
 }

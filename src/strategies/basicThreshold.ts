@@ -1,4 +1,4 @@
-import type { ITradingStrategy } from "./index";
+import type { ITradingStrategy, TickContext } from "./index";
 import { Exchange } from "../core/exchange";
 import { Logger } from "../utils/logger";
 
@@ -10,7 +10,7 @@ export class BasicThresholdStrategy implements ITradingStrategy {
         this.buyThreshold = buyThreshold;
     }
 
-    async onTick(price: number, exchange: Exchange, symbol: string): Promise<void> {
+    async onTick(price: number, exchange: Exchange, symbol: string, ctx: TickContext): Promise<void> {
         if (!this.hasBought && price < this.buyThreshold) {
             Logger.info(`Price ${price} is below threshold ${this.buyThreshold}. Initiating BUY.`);
             try {

@@ -1,6 +1,6 @@
 import { Logger } from "../utils/logger";
 import { TradingBot } from "../bot";
-import { HyperScalpingStrategy } from "../strategies/hyperScalping";
+import { OrderBookScalpingStrategy } from "../strategies/orderBookScalping";
 import { Tracker } from "../core/tracker";
 import { config } from "../config";
 
@@ -68,10 +68,10 @@ export function startDashboard(bot: TradingBot, port: number = 3000) {
             if (url.pathname === "/api/status") {
                 let stratState = "Running";
 
-                // Find the attached HyperScalping Strategy to grab its internal textual status
-                const hyperStrat = bot.strategies.find(s => s instanceof HyperScalpingStrategy) as HyperScalpingStrategy | undefined;
-                if (hyperStrat) {
-                    stratState = hyperStrat.latestState;
+                // Find the attached OrderBook Strategy to grab its internal textual status
+                const obStrat = bot.strategies.find(s => s instanceof OrderBookScalpingStrategy) as OrderBookScalpingStrategy | undefined;
+                if (obStrat) {
+                    stratState = obStrat.latestState;
                 }
 
                 const data = {
@@ -83,6 +83,9 @@ export function startDashboard(bot: TradingBot, port: number = 3000) {
                     totalTrades: Tracker.getTotalTrades(),
                     balanceBTC: bot.balanceBTC,
                     balanceQuote: bot.balanceQuote,
+                    obi: obStrat?.latestOBI ?? 0,
+                    spread: obStrat?.latestSpread ?? 0,
+                    ema: obStrat?.latestEMA ?? 0,
                     logs: Logger.logs,
                     isLive: config.isLive
                 };

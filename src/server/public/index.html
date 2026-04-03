@@ -189,6 +189,12 @@
             <div class="stat-card"><span>💵 USDC</span>
                 <div class="val" id="val-usdc" style="color: #2775ca;">...</div>
             </div>
+            <div class="stat-card"><span>📊 OBI</span>
+                <div class="val" id="val-obi">...</div>
+            </div>
+            <div class="stat-card"><span>↔️ Spread</span>
+                <div class="val" id="val-spread">...</div>
+            </div>
         </div>
     </div>
 
@@ -264,6 +270,13 @@
                 document.getElementById('val-state').innerText = data.state;
                 document.getElementById('val-btc').innerText = data.balanceBTC !== undefined ? data.balanceBTC.toFixed(8) : '...';
                 document.getElementById('val-usdc').innerText = data.balanceQuote !== undefined ? '$' + data.balanceQuote.toFixed(2) : '...';
+
+                const obiBox = document.getElementById('val-obi');
+                const obiPct = (data.obi * 100).toFixed(1) + '%';
+                obiBox.innerText = obiPct;
+                obiBox.className = 'val ' + (data.obi > 0.55 ? 'positive' : data.obi < 0.45 ? 'negative' : '');
+
+                document.getElementById('val-spread').innerText = data.spread !== undefined ? data.spread.toFixed(4) + '%' : '...';
 
                 // Render Logs Box
                 const logsBox = document.getElementById('logs-box');

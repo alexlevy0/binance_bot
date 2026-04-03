@@ -2,7 +2,7 @@ import { config } from './src/config';
 import { Logger } from './src/utils/logger';
 import { Exchange } from './src/core/exchange';
 import { TradingBot } from './src/bot';
-import { HyperScalpingStrategy } from './src/strategies/hyperScalping';
+import { OrderBookScalpingStrategy } from './src/strategies/orderBookScalping';
 import { startDashboard } from './src/server';
 
 async function main() {
@@ -22,18 +22,24 @@ async function main() {
             });
         }
 
-        // Initialize the Bot orchestrator
-        const bot = new TradingBot(exchange, config.defaultPair, config.pollingIntervalMs);
+        // Initialize the Bot orchestrator (now WebSocket-driven, no polling interval needed)
+        const bot = new TradingBot(exchange, config.defaultPair);
 
-        // Register the High-Frequency Scalping Strategy ! 🚀
-        // Ex: Achete de suite, et revend pour 0.02% de profit, ou coupe à 0.05% de perte
-        // 0.0001 BTC (~6.6 USDC) - après commission (~0.00009 BTC) la valeur reste > 5$ NOTIONAL
-        bot.registerStrategy(new HyperScalpingStrategy(0.0001, 1.0002, 0.9995));
+        // Register the Order Book Microstructure Strategy 📊
+        // Analyse le carnet d'ordres en temps réel (OBI, Spread, EMA) pour des entrées intelligentes
+        bot.registerStrategy(new OrderBookScalpingStrategy());
 
         // Boot natively isolated UI Dashboard ⚡
         startDashboard(bot, 3000);
 
         await bot.start();
+
+        // Periodic price logging (every 5s to avoid spam)
+        setInterval(() => {
+            if (bot.latestPrice > 0) {
+                Logger.info(`${config.defaultPair} Price: $${bot.latestPrice.toLocaleString()} | BTC: ${bot.balanceBTC} | USDC: $${bot.balanceQuote.toFixed(2)}`);
+            }
+        }, 5000);
 
         // Catch SIGINT to allow graceful shutdown
         process.on('SIGINT', () => {

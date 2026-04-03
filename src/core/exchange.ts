@@ -99,4 +99,16 @@ export class Exchange {
             throw error;
         }
     }
+
+    async getOrderBook(symbol: string, limit: number = 20): Promise<{ bids: [number, number][], asks: [number, number][] }> {
+        try {
+            const response = await this.client.depth(symbol, { limit });
+            const bids = response.data.bids.map((b: any) => [parseFloat(b[0]), parseFloat(b[1])] as [number, number]);
+            const asks = response.data.asks.map((a: any) => [parseFloat(a[0]), parseFloat(a[1])] as [number, number]);
+            return { bids, asks };
+        } catch (error: any) {
+            Logger.error(`Order Book fetch failed for ${symbol}`, error?.response?.data || error.message);
+            return { bids: [], asks: [] };
+        }
+    }
 }

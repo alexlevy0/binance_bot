@@ -1,4 +1,4 @@
-import type { ITradingStrategy } from "./index";
+import type { ITradingStrategy, TickContext } from "./index";
 import { Exchange } from "../core/exchange";
 import { Logger } from "../utils/logger";
 import { Tracker } from "../core/tracker";
@@ -24,7 +24,7 @@ export class HyperScalpingStrategy implements ITradingStrategy {
         this.stopLossMargin = stopLoss;
     }
 
-    async onTick(price: number, exchange: Exchange, symbol: string): Promise<void> {
+    async onTick(price: number, exchange: Exchange, symbol: string, ctx: TickContext): Promise<void> {
         // Mode Pause si un trade a lieu récemment
         if (this.cooldownTicks > 0) {
             this.cooldownTicks--;

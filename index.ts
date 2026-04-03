@@ -4,6 +4,8 @@ import { Exchange } from './src/core/exchange';
 import { TradingBot } from './src/bot';
 import { OrderBookScalpingStrategy } from './src/strategies/orderBookScalping';
 import { startDashboard } from './src/server';
+import { MarketRecorder } from './src/replay/marketRecorder';
+import { runReplayMode } from './src/replay/replayEngine';
 
 function getAuthTroubleshootingHint() {
     if (config.isLive) {
@@ -14,6 +16,22 @@ function getAuthTroubleshootingHint() {
 }
 
 async function main() {
+    if (config.isReplay) {
+        try {
+            await runReplayMode({
+                filePath: config.replayFile,
+                useLatest: config.replayLatest,
+                optimize: config.optimizeReplay,
+                initialQuoteOverride: config.replayQuoteOverride,
+                initialBaseOverride: config.replayBaseOverride,
+            });
+        } catch (error: any) {
+            Logger.error("Replay mode failed", error?.message || error);
+            process.exitCode = 1;
+        }
+        return;
+    }
+
     Logger.info(`🚀 Initializing Scalable Binance Spot Trading Bot in ${config.isLive ? '🔴 LIVE' : '🟢 DEMO'} mode...`);
 
     const exchange = new Exchange(config.apiKey, config.secretKey, config.baseURL);
@@ -37,7 +55,8 @@ async function main() {
         }
 
         // Initialize the Bot orchestrator (now WebSocket-driven, no polling interval needed)
-        const bot = new TradingBot(exchange, config.defaultPair);
+        const marketRecorder = new MarketRecorder(config.recordMarketData);
+        const bot = new TradingBot(exchange, config.defaultPair, { marketRecorder });
 
         // Register the Order Book Microstructure Strategy 📊
         // Analyse le carnet d'ordres en temps réel (OBI, Spread, EMA) pour des entrées intelligentes

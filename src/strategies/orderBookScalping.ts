@@ -99,6 +99,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
     private tpMultiplier: number;
     private slMultiplier: number;
     private minNotional: number;
+    private minScore: number;
 
     constructor(
         maxSpreadPct: number = 0.05,
@@ -106,7 +107,8 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         obiExitThreshold: number = 0.38,
         tpMultiplier: number = 4.2,
         slMultiplier: number = 2.2,
-        minNotional: number = 6.0
+        minNotional: number = 6.0,
+        minScore: number = 8
     ) {
         this.maxSpreadPct = maxSpreadPct;
         this.obiThreshold = obiThreshold;
@@ -114,6 +116,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         this.tpMultiplier = tpMultiplier;
         this.slMultiplier = slMultiplier;
         this.minNotional = minNotional;
+        this.minScore = minScore;
     }
 
     // ── EMA Calculation ──
@@ -222,9 +225,113 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         return this.getEffectiveMinNotional() * this.dustIgnoreRatio;
     }
 
+    private getSyncThresholdQty(): number {
+        if (this.exchangeStepSize > 0) {
+            return this.exchangeStepSize;
+        }
+
+        return 0.00001;
+    }
+
     private isDustQuantity(quantity: number, price: number): boolean {
         if (quantity <= 0) return false;
         return quantity * price < this.getDustIgnoreNotional();
+    }
+
+    private isTradableQuantity(quantity: number, price: number): boolean {
+        if (quantity <= 0) {
+            return false;
+        }
+
+        const effectiveMinQty = this.getEffectiveMinQty();
+        if (effectiveMinQty > 0 && quantity < effectiveMinQty) {
+            return false;
+        }
+
+        return quantity * price >= this.getEffectiveMinNotional();
+    }
+
+    private armManagedPosition(entryPrice: number, quantity: number, marketPrice: number) {
+        this.positionOpen = true;
+        this.buyPrice = entryPrice;
+        this.actualQuantity = quantity;
+        this.highestPriceSinceEntry = Math.max(marketPrice, entryPrice);
+        this.currentTrailingPct = Math.max(this.trailingStopPct, 0.00045);
+        this.trailingStopPrice = this.highestPriceSinceEntry * (1 - this.currentTrailingPct);
+        this.takeProfitPrice = entryPrice * 1.0009;
+        this.stopLossPrice = Math.max(entryPrice * 0.9994, this.trailingStopPrice);
+        this.breakEvenTriggerPrice = entryPrice * 1.00035;
+        this.breakEvenPrice = entryPrice * 1.00008;
+        this.tradeConviction = 0.5;
+        this.latestConviction = this.tradeConviction;
+        this.exitBlockedByNotional = false;
+        this.untrackedWalletPositionSeen = false;
+    }
+
+    private syncTrackedPositionToWallet(price: number, walletQuantity: number, reason: string) {
+        const walletQty = this.floorQuantity(walletQuantity);
+        if (!this.isTradableQuantity(walletQty, price)) {
+            return false;
+        }
+
+        const trackedPosition = Tracker.getOpenPosition();
+        const trackedQty = trackedPosition ? this.floorQuantity(trackedPosition.quantity) : 0;
+        const safeTrackedQty = Math.max(trackedQty, 0);
+        const extraQty = Math.max(walletQty - safeTrackedQty, 0);
+        const trackedEntryPrice = trackedPosition?.entryPrice ?? this.buyPrice;
+        const blendedEntryPrice =
+            safeTrackedQty > 0 && trackedEntryPrice > 0
+                ? ((trackedEntryPrice * safeTrackedQty) + (price * extraQty)) / walletQty
+                : price;
+
+        this.armManagedPosition(blendedEntryPrice, walletQty, price);
+        Tracker.setOpenPosition({
+            entryPrice: blendedEntryPrice,
+            quantity: walletQty,
+        });
+
+        Logger.warn(`[OrderBook] Position resynchronisee sur le wallet (${reason}) -> ${walletQty} BTC`);
+        this.latestState = `📈 Position sync wallet @ $${blendedEntryPrice.toFixed(2)}`;
+        return true;
+    }
+
+    private syncOpenPositionWithWalletIfNeeded(price: number, walletQuantity: number) {
+        if (!this.positionOpen || walletQuantity <= 0) {
+            return;
+        }
+
+        const walletQty = this.floorQuantity(walletQuantity);
+        const trackedQty = this.floorQuantity(this.actualQuantity);
+        const quantityGap = Math.abs(walletQty - trackedQty);
+        if (quantityGap < this.getSyncThresholdQty()) {
+            return;
+        }
+
+        if (walletQty > trackedQty && this.isTradableQuantity(walletQty, price)) {
+            this.actualQuantity = walletQty;
+            const trackedPosition = Tracker.getOpenPosition();
+            const syncedEntryPrice = trackedPosition?.entryPrice ?? this.buyPrice ?? price;
+            if (trackedPosition || syncedEntryPrice > 0) {
+                Tracker.setOpenPosition({
+                    entryPrice: syncedEntryPrice,
+                    quantity: walletQty,
+                });
+            }
+            Logger.warn(`[OrderBook] Quantite suivie augmentee pour coller au wallet -> ${walletQty} BTC`);
+            return;
+        }
+
+        if (walletQty < trackedQty && walletQty > 0) {
+            this.actualQuantity = walletQty;
+            const trackedPosition = Tracker.getOpenPosition();
+            if (trackedPosition) {
+                Tracker.setOpenPosition({
+                    entryPrice: trackedPosition.entryPrice,
+                    quantity: walletQty,
+                });
+            }
+            Logger.warn(`[OrderBook] Quantite suivie reduite pour coller au wallet -> ${walletQty} BTC`);
+        }
     }
 
     private clearTrackedDustIfNeeded(price: number) {
@@ -304,23 +411,26 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
     private restoreTrackedPosition(price: number, walletQuantity: number): boolean {
         const trackedPosition = Tracker.getOpenPosition();
         const walletQty = this.floorQuantity(walletQuantity);
-        const walletValue = walletQty * price;
-        const effectiveMinNotional = this.getEffectiveMinNotional();
+        const walletTradable = this.isTradableQuantity(walletQty, price);
 
-        if (walletValue < effectiveMinNotional) {
+        if (!walletTradable) {
             return false;
         }
 
         if (!trackedPosition) {
             if (!this.untrackedWalletPositionSeen) {
-                Logger.warn(`[OrderBook] BTC detecte sans position suivie dans le tracker: ${walletQty} BTC`);
+                Logger.warn(`[OrderBook] BTC detecte sans position suivie dans le tracker: ${walletQty} BTC. Adoption du wallet.`);
                 this.untrackedWalletPositionSeen = true;
             }
-            this.latestState = `⚠️ BTC detecte (${walletQty}) sans entree suivie`;
-            return true;
+            return this.syncTrackedPositionToWallet(price, walletQty, "tracker absent");
         }
 
         const trackedQty = this.floorQuantity(trackedPosition.quantity);
+        const quantityGap = Math.abs(walletQty - trackedQty);
+        if (walletQty > trackedQty && quantityGap >= this.getSyncThresholdQty()) {
+            return this.syncTrackedPositionToWallet(price, walletQty, `wallet ${walletQty} > tracker ${trackedQty}`);
+        }
+
         const restoredQty = walletQty > 0 ? Math.min(walletQty, trackedQty) : trackedQty;
         const restoredNotional = restoredQty * price;
         if (
@@ -331,22 +441,10 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             return false;
         }
 
-        this.positionOpen = true;
-        this.buyPrice = trackedPosition.entryPrice;
-        this.actualQuantity = restoredQty;
-        this.highestPriceSinceEntry = Math.max(price, this.buyPrice);
-        this.currentTrailingPct = Math.max(this.trailingStopPct, 0.00045);
-        this.trailingStopPrice = this.highestPriceSinceEntry * (1 - this.currentTrailingPct);
-        this.takeProfitPrice = this.buyPrice * 1.0009;
-        this.stopLossPrice = Math.max(this.buyPrice * 0.9994, this.trailingStopPrice);
-        this.breakEvenTriggerPrice = this.buyPrice * 1.00035;
-        this.breakEvenPrice = this.buyPrice * 1.00008;
-        this.tradeConviction = 0.5;
-        this.latestConviction = this.tradeConviction;
-        this.untrackedWalletPositionSeen = false;
+        this.armManagedPosition(trackedPosition.entryPrice, restoredQty, price);
 
         if (restoredQty !== trackedQty) {
-            Tracker.setOpenPosition({ entryPrice: this.buyPrice, quantity: restoredQty });
+            Tracker.setOpenPosition({ entryPrice: trackedPosition.entryPrice, quantity: restoredQty });
         }
 
         Logger.info(`[OrderBook] Position restauree: ${this.actualQuantity} BTC @ $${this.buyPrice.toFixed(2)}`);
@@ -488,7 +586,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             if (velocityOk) { score += 1; } else { scoreReasons.push('Spike'); }
             if (absorptionBoost) { score += 2; scoreReasons.push('🔥Absorb!'); }
 
-            const minScore = 8;
+            const minScore = this.minScore;
             const maxScore = 13;
 
             if (score < minScore) {
@@ -563,6 +661,8 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             // ══════════════════════════════════════════════════
             // ──────────── EXIT LOGIC ────────────
             // ══════════════════════════════════════════════════
+
+            this.syncOpenPositionWithWalletIfNeeded(price, ctx.balanceBTC);
 
             if (ctx.balanceBTC > 0 && this.isDustQuantity(ctx.balanceBTC, price)) {
                 this.ignoreDustPosition("wallet sous le seuil de vente", price, ctx.balanceBTC);

@@ -1,8 +1,14 @@
 import { Exchange } from "./core/exchange";
 import { WebSocketFeed } from "./core/websocketFeed";
+import { Tracker } from "./core/tracker";
 import { Logger } from "./utils/logger";
 import type { ITradingStrategy, TickContext } from "./strategies";
 import { config } from "./config";
+import type { MarketRecorder } from "./replay/marketRecorder";
+
+interface TradingBotOptions {
+    marketRecorder?: MarketRecorder | null;
+}
 
 export class TradingBot {
     public exchange: Exchange;
@@ -27,13 +33,15 @@ export class TradingBot {
     private strategyThrottleMs: number = 500; // Run strategy max 2x/sec
     private strategyRunInFlight: boolean = false;
     private pendingStrategyPrice: number | null = null;
+    private marketRecorder: MarketRecorder | null;
 
     // Balance refresh interval
     private balanceIntervalId: ReturnType<typeof setInterval> | null = null;
 
-    constructor(exchange: Exchange, symbol: string = 'BTCUSDC') {
+    constructor(exchange: Exchange, symbol: string = 'BTCUSDC', options: TradingBotOptions = {}) {
         this.exchange = exchange;
         this.symbol = symbol;
+        this.marketRecorder = options.marketRecorder || null;
 
         // Extract base/quote
         const quoteAssets = ['USDC', 'USDT', 'BUSD', 'EUR'];
@@ -62,6 +70,38 @@ export class TradingBot {
 
         // Fetch initial balances
         await this.refreshBalances();
+
+        if (this.marketRecorder?.isEnabled()) {
+            try {
+                const exchangeRules = await this.exchange.getSymbolTradingRules(this.symbol);
+                this.marketRecorder.startSession({
+                    symbol: this.symbol,
+                    mode: config.isLive ? 'live' : 'demo',
+                    initialBalances: {
+                        base: this.balanceBTC,
+                        quote: this.balanceQuote,
+                    },
+                    trackedOpenPosition: Tracker.getOpenPosition(),
+                    exchangeRules,
+                });
+            } catch (error: any) {
+                Logger.warn(`[Replay] Impossible de charger les filtres du symbole pour l'enregistrement (${error?.message || error})`);
+                this.marketRecorder.startSession({
+                    symbol: this.symbol,
+                    mode: config.isLive ? 'live' : 'demo',
+                    initialBalances: {
+                        base: this.balanceBTC,
+                        quote: this.balanceQuote,
+                    },
+                    trackedOpenPosition: Tracker.getOpenPosition(),
+                    exchangeRules: {
+                        minNotional: 0,
+                        minQty: 0,
+                        stepSize: 0,
+                    },
+                });
+            }
+        }
 
         // Start balance refresh every 5s (via REST, lightweight)
         this.balanceIntervalId = setInterval(async () => {
@@ -101,6 +141,7 @@ export class TradingBot {
         if (this.balanceIntervalId) {
             clearInterval(this.balanceIntervalId);
         }
+        this.marketRecorder?.stopSession();
         Logger.info(`⏹️ Bot stopped for ${this.symbol}.`);
     }
 
@@ -123,6 +164,13 @@ export class TradingBot {
             bids: this.latestBids,
             asks: this.latestAsks,
         };
+
+        this.marketRecorder?.recordTick({
+            time: Date.now(),
+            price,
+            bids: ctx.bids,
+            asks: ctx.asks,
+        });
 
         for (const strategy of this.strategies) {
             try {

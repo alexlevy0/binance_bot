@@ -23,6 +23,7 @@ class PerformanceTracker {
     private totalWinningTrades: number = 0;
     private totalLosingTrades: number = 0;
     private openPosition: OpenPosition | null = null;
+    private persistenceEnabled: boolean = true;
 
     constructor() {
         this.init();
@@ -60,6 +61,7 @@ class PerformanceTracker {
     }
 
     private save() {
+        if (!this.persistenceEnabled) return;
         try {
             const data = {
                 trades: this.trades,
@@ -123,6 +125,42 @@ class PerformanceTracker {
     public setOpenPosition(position: OpenPosition | null) {
         this.openPosition = position ? { ...position } : null;
         this.save();
+    }
+
+    private createSnapshot() {
+        return {
+            trades: this.trades.map((trade) => ({ ...trade })),
+            realizedPnl: this.realizedPnl,
+            totalWinningTrades: this.totalWinningTrades,
+            totalLosingTrades: this.totalLosingTrades,
+            openPosition: this.openPosition ? { ...this.openPosition } : null,
+            persistenceEnabled: this.persistenceEnabled,
+        };
+    }
+
+    private restoreSnapshot(snapshot: ReturnType<typeof PerformanceTracker.prototype.createSnapshot>) {
+        this.trades = snapshot.trades.map((trade) => ({ ...trade }));
+        this.realizedPnl = snapshot.realizedPnl;
+        this.totalWinningTrades = snapshot.totalWinningTrades;
+        this.totalLosingTrades = snapshot.totalLosingTrades;
+        this.openPosition = snapshot.openPosition ? { ...snapshot.openPosition } : null;
+        this.persistenceEnabled = snapshot.persistenceEnabled;
+    }
+
+    public async runIsolated<T>(fn: () => Promise<T> | T): Promise<T> {
+        const snapshot = this.createSnapshot();
+
+        try {
+            this.trades = [];
+            this.realizedPnl = 0;
+            this.totalWinningTrades = 0;
+            this.totalLosingTrades = 0;
+            this.openPosition = null;
+            this.persistenceEnabled = false;
+            return await fn();
+        } finally {
+            this.restoreSnapshot(snapshot);
+        }
     }
 
     public getWinRate(): number {

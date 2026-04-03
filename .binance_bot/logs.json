@@ -1,1002 +1,1002 @@
 [
   {
-    "timestamp": "2026-04-03T16:23:29.177Z",
+    "timestamp": "2026-04-03T16:52:16.064Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,946.39 | BTC: 0.0002051 | USDC: $11.04"
+    "message": "BTCUSDC Price: $67,055.51 | BTC: 0.00016299 | USDC: $13.58"
   },
   {
-    "timestamp": "2026-04-03T16:23:24.176Z",
+    "timestamp": "2026-04-03T16:52:11.063Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,956.8 | BTC: 0.0003151 | USDC: $3.68"
+    "message": "BTCUSDC Price: $67,055.51 | BTC: 0.00016299 | USDC: $13.58"
   },
   {
-    "timestamp": "2026-04-03T16:23:23.507Z",
+    "timestamp": "2026-04-03T16:52:06.063Z",
     "type": "INFO",
-    "message": "[Tracker] System Logged SELL Trade at $66956.81"
+    "message": "BTCUSDC Price: $67,055.51 | BTC: 0.00016299 | USDC: $13.58"
   },
   {
-    "timestamp": "2026-04-03T16:23:23.270Z",
-    "type": "SUCCESS",
-    "message": "📈 [Pro] Trailing Stop (profit lock)! $66956.81"
-  },
-  {
-    "timestamp": "2026-04-03T16:23:19.176Z",
+    "timestamp": "2026-04-03T16:52:01.063Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,974.86 | BTC: 0.0003151 | USDC: $3.68"
+    "message": "BTCUSDC Price: $67,055.51 | BTC: 0.00016299 | USDC: $13.58"
   },
   {
-    "timestamp": "2026-04-03T16:23:14.175Z",
+    "timestamp": "2026-04-03T16:51:56.063Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,976.53 | BTC: 0.0003151 | USDC: $3.68"
+    "message": "BTCUSDC Price: $67,058.52 | BTC: 0.00016299 | USDC: $13.58"
   },
   {
-    "timestamp": "2026-04-03T16:23:09.175Z",
+    "timestamp": "2026-04-03T16:51:51.064Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,976.53 | BTC: 0.0003151 | USDC: $3.68"
+    "message": "BTCUSDC Price: $67,057 | BTC: 0.00016299 | USDC: $13.58"
   },
   {
-    "timestamp": "2026-04-03T16:23:08.825Z",
-    "type": "INFO",
-    "message": "[Pro] TP extension activee: nouveau TP $66995.77 | Trail 0.026%"
-  },
-  {
-    "timestamp": "2026-04-03T16:23:04.173Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,965.61 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:22:59.174Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,958.91 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:22:54.172Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,958.91 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:22:49.172Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,956.4 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:22:44.171Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,943.22 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:22:39.171Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,942.13 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:22:34.170Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,943.81 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:22:29.171Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,945.98 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:22:24.169Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,947.45 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:22:19.169Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,947.45 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:22:14.168Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,948.12 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:22:09.168Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,943.79 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:22:04.167Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,933.72 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:21:59.167Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,930 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:21:54.167Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,926.16 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:21:49.166Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,926.17 | BTC: 0.0003151 | USDC: $3.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:21:44.165Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,926.16 | BTC: 0.00019521 | USDC: $11.71"
-  },
-  {
-    "timestamp": "2026-04-03T16:21:40.099Z",
-    "type": "INFO",
-    "message": "[Tracker] System Logged BUY Trade at $66925.74"
-  },
-  {
-    "timestamp": "2026-04-03T16:21:39.866Z",
-    "type": "INFO",
-    "message": "[Pro] TP:$66967.57 SL:$66909.77 Trail:0.035% Qty:0.00012"
-  },
-  {
-    "timestamp": "2026-04-03T16:21:39.865Z",
-    "type": "SUCCESS",
-    "message": "📊 [Pro] ENTRY! Score:12 Conv:80% OBI:80% Top:81% EMA:66928/66935 ATR:0.0030%"
-  },
-  {
-    "timestamp": "2026-04-03T16:21:39.165Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,925.73 | BTC: 0.00019521 | USDC: $11.71"
-  },
-  {
-    "timestamp": "2026-04-03T16:21:34.165Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,931.14 | BTC: 0.00031521 | USDC: $3.69"
-  },
-  {
-    "timestamp": "2026-04-03T16:21:33.204Z",
-    "type": "INFO",
-    "message": "[Tracker] System Logged SELL Trade at $66936.24"
-  },
-  {
-    "timestamp": "2026-04-03T16:21:32.965Z",
+    "timestamp": "2026-04-03T16:51:46.315Z",
     "type": "WARN",
-    "message": "⚡ [Pro] OBI Reversal (37.6%) @ $66936.24"
+    "message": "[OrderBook] Position resynchronisee sur le wallet (wallet 0.00016 > tracker 0.00014) -> 0.00016 BTC"
   },
   {
-    "timestamp": "2026-04-03T16:21:29.163Z",
+    "timestamp": "2026-04-03T16:51:46.063Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,941.94 | BTC: 0.00031521 | USDC: $3.69"
+    "message": "BTCUSDC Price: $67,058.5 | BTC: 0.00016299 | USDC: $13.58"
   },
   {
-    "timestamp": "2026-04-03T16:21:24.164Z",
+    "timestamp": "2026-04-03T16:51:41.063Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,936.87 | BTC: 0.00031521 | USDC: $3.69"
+    "message": "BTCUSDC Price: $67,062.22 | BTC: 0.00016299 | USDC: $13.58"
   },
   {
-    "timestamp": "2026-04-03T16:21:19.162Z",
+    "timestamp": "2026-04-03T16:51:36.064Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,936.87 | BTC: 0.00031521 | USDC: $3.69"
+    "message": "BTCUSDC Price: $67,062.23 | BTC: 0.00000314 | USDC: $24.31"
   },
   {
-    "timestamp": "2026-04-03T16:21:14.163Z",
+    "timestamp": "2026-04-03T16:51:35.666Z",
+    "type": "ERROR",
+    "message": "Pro BUY échoué"
+  },
+  {
+    "timestamp": "2026-04-03T16:51:35.665Z",
+    "type": "ERROR",
+    "message": "Buy Order Failed for BTCUSDC"
+  },
+  {
+    "timestamp": "2026-04-03T16:51:35.432Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,943.38 | BTC: 0.00031521 | USDC: $3.69"
+    "message": "[Pro] TP:$67100.09 SL:$67045.38 Trail:0.035% Qty:0.00021"
   },
   {
-    "timestamp": "2026-04-03T16:21:09.161Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,945.05 | BTC: 0.00031521 | USDC: $3.69"
-  },
-  {
-    "timestamp": "2026-04-03T16:21:04.161Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,945.05 | BTC: 0.00031521 | USDC: $3.69"
-  },
-  {
-    "timestamp": "2026-04-03T16:21:03.722Z",
-    "type": "INFO",
-    "message": "[Pro] TP extension activee: nouveau TP $66962.87 | Trail 0.026%"
-  },
-  {
-    "timestamp": "2026-04-03T16:20:59.160Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,933.85 | BTC: 0.00031521 | USDC: $3.69"
-  },
-  {
-    "timestamp": "2026-04-03T16:20:54.160Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,933.85 | BTC: 0.00031521 | USDC: $3.69"
-  },
-  {
-    "timestamp": "2026-04-03T16:20:49.159Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,933.85 | BTC: 0.00031521 | USDC: $3.69"
-  },
-  {
-    "timestamp": "2026-04-03T16:20:44.159Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,933.85 | BTC: 0.00031521 | USDC: $3.69"
-  },
-  {
-    "timestamp": "2026-04-03T16:20:39.158Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,933.84 | BTC: 0.00031521 | USDC: $3.69"
-  },
-  {
-    "timestamp": "2026-04-03T16:20:34.158Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,933.84 | BTC: 0.00031521 | USDC: $3.69"
-  },
-  {
-    "timestamp": "2026-04-03T16:20:29.156Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,933.85 | BTC: 0.00031521 | USDC: $3.69"
-  },
-  {
-    "timestamp": "2026-04-03T16:20:24.156Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,934.53 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:20:19.154Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,930.2 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:20:14.153Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,928.67 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:20:09.154Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,928.67 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:20:04.152Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,928.67 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:19:59.152Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,915.99 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:19:54.151Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,909.37 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:19:49.152Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,909.38 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:19:44.151Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,909.37 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:19:39.150Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,909.37 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:19:34.150Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,909.38 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:19:29.149Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.04 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:19:24.148Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.04 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:19:19.148Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.04 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:19:14.147Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.04 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:19:09.148Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.05 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:19:04.147Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.05 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:59.146Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.05 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:54.144Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.04 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:49.143Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,915.06 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:44.143Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,916.73 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:39.143Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,916.73 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:34.142Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.04 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:29.141Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,905.37 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:24.141Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,905.37 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:19.140Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,900.62 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:14.141Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,898.44 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:09.139Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,898.44 | BTC: 0.00031521 | USDC: $3.63"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:04.180Z",
-    "type": "INFO",
-    "message": "[Tracker] System Logged BUY Trade at $66895.92"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:04.140Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,895.92 | BTC: 0.00018534 | USDC: $12.33"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:03.942Z",
-    "type": "INFO",
-    "message": "[Pro] TP:$66939.75 SL:$66880.38 Trail:0.035% Qty:0.00013"
-  },
-  {
-    "timestamp": "2026-04-03T16:18:03.941Z",
+    "timestamp": "2026-04-03T16:51:35.432Z",
     "type": "SUCCESS",
-    "message": "📊 [Pro] ENTRY! Score:13 Conv:100% OBI:91% Top:92% EMA:66893/66892 ATR:0.0029%"
+    "message": "📊 [Pro] ENTRY! Score:10 Conv:40% OBI:81% Top:69% EMA:67054/67056 ATR:0.0056%"
   },
   {
-    "timestamp": "2026-04-03T16:17:59.139Z",
+    "timestamp": "2026-04-03T16:51:34.150Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,893.65 | BTC: 0.00018534 | USDC: $12.33"
+    "message": "[OrderBook] Dust ignoree (wallet sous le seuil de vente) ~ $0.21. Strategie rearmee."
   },
   {
-    "timestamp": "2026-04-03T16:17:54.137Z",
+    "timestamp": "2026-04-03T16:51:32.761Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,875.76 | BTC: 0.00028534 | USDC: $5.64"
+    "message": "[Tracker] System Logged BUY Trade at $67042.48"
   },
   {
-    "timestamp": "2026-04-03T16:17:52.745Z",
+    "timestamp": "2026-04-03T16:51:32.522Z",
     "type": "INFO",
-    "message": "[Tracker] System Logged SELL Trade at $66875.77"
+    "message": "[Pro] TP:$67076.27 SL:$67024.78 Trail:0.035% Qty:0.00016"
   },
   {
-    "timestamp": "2026-04-03T16:17:52.507Z",
+    "timestamp": "2026-04-03T16:51:32.521Z",
+    "type": "SUCCESS",
+    "message": "📊 [Pro] ENTRY! Score:8 Conv:0% OBI:54% Top:85% EMA:67045/67055 ATR:0.0040%"
+  },
+  {
+    "timestamp": "2026-04-03T16:51:31.064Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,042.48 | BTC: 0.00000314 | USDC: $24.31"
+  },
+  {
+    "timestamp": "2026-04-03T16:51:26.063Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,049.64 | BTC: 0.00018314 | USDC: $12.25"
+  },
+  {
+    "timestamp": "2026-04-03T16:51:25.007Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged SELL Trade at $67055.51"
+  },
+  {
+    "timestamp": "2026-04-03T16:51:24.771Z",
     "type": "WARN",
-    "message": "⚡ [Pro] OBI Reversal (37.5%) @ $66875.77"
+    "message": "⚡ [Pro] OBI Reversal (17.6%) @ $67055.51"
   },
   {
-    "timestamp": "2026-04-03T16:17:49.137Z",
+    "timestamp": "2026-04-03T16:51:21.063Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,882.1 | BTC: 0.00028534 | USDC: $5.64"
+    "message": "BTCUSDC Price: $67,066.82 | BTC: 0.00018314 | USDC: $12.25"
   },
   {
-    "timestamp": "2026-04-03T16:17:44.136Z",
+    "timestamp": "2026-04-03T16:51:16.062Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,882.1 | BTC: 0.00028534 | USDC: $5.64"
+    "message": "BTCUSDC Price: $67,072.31 | BTC: 0.00018314 | USDC: $12.25"
   },
   {
-    "timestamp": "2026-04-03T16:17:39.136Z",
+    "timestamp": "2026-04-03T16:51:11.063Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,882.1 | BTC: 0.00028534 | USDC: $5.64"
+    "message": "BTCUSDC Price: $67,064.75 | BTC: 0.00018314 | USDC: $12.25"
   },
   {
-    "timestamp": "2026-04-03T16:17:34.135Z",
+    "timestamp": "2026-04-03T16:51:06.061Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,881.7 | BTC: 0.00017544 | USDC: $13.00"
+    "message": "BTCUSDC Price: $67,064.75 | BTC: 0.00018314 | USDC: $12.25"
   },
   {
-    "timestamp": "2026-04-03T16:17:33.463Z",
+    "timestamp": "2026-04-03T16:51:01.060Z",
     "type": "INFO",
-    "message": "[Tracker] System Logged BUY Trade at $66881.69"
+    "message": "BTCUSDC Price: $67,067.28 | BTC: 0.00018314 | USDC: $12.25"
   },
   {
-    "timestamp": "2026-04-03T16:17:33.226Z",
+    "timestamp": "2026-04-03T16:50:56.060Z",
     "type": "INFO",
-    "message": "[Pro] TP:$66919.44 SL:$66864.88 Trail:0.035% Qty:0.00011"
+    "message": "BTCUSDC Price: $67,053.88 | BTC: 0.00018314 | USDC: $12.25"
   },
   {
-    "timestamp": "2026-04-03T16:17:33.225Z",
+    "timestamp": "2026-04-03T16:50:51.058Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,052.17 | BTC: 0.00018314 | USDC: $12.25"
+  },
+  {
+    "timestamp": "2026-04-03T16:50:46.058Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,065.66 | BTC: 0.00018314 | USDC: $12.25"
+  },
+  {
+    "timestamp": "2026-04-03T16:50:44.296Z",
+    "type": "INFO",
+    "message": "[OrderBook] Position restauree: 0.00018 BTC @ $67045.79"
+  },
+  {
+    "timestamp": "2026-04-03T16:50:41.058Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,067.28 | BTC: 0.00018314 | USDC: $12.25"
+  },
+  {
+    "timestamp": "2026-04-03T16:50:36.057Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,049.64 | BTC: 0.00000331 | USDC: $24.32"
+  },
+  {
+    "timestamp": "2026-04-03T16:50:35.609Z",
+    "type": "ERROR",
+    "message": "Pro BUY échoué"
+  },
+  {
+    "timestamp": "2026-04-03T16:50:35.609Z",
+    "type": "ERROR",
+    "message": "Buy Order Failed for BTCUSDC"
+  },
+  {
+    "timestamp": "2026-04-03T16:50:35.371Z",
+    "type": "INFO",
+    "message": "[Pro] TP:$67091.05 SL:$67031.54 Trail:0.035% Qty:0.00023"
+  },
+  {
+    "timestamp": "2026-04-03T16:50:35.370Z",
     "type": "SUCCESS",
-    "message": "📊 [Pro] ENTRY! Score:10 Conv:40% OBI:51% Top:80% EMA:66890/66905 ATR:0.0042%"
+    "message": "📊 [Pro] ENTRY! Score:13 Conv:100% OBI:75% Top:87% EMA:67046/67041 ATR:0.0014%"
   },
   {
-    "timestamp": "2026-04-03T16:17:29.135Z",
+    "timestamp": "2026-04-03T16:50:34.187Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,898.08 | BTC: 0.00017544 | USDC: $13.00"
+    "message": "[OrderBook] Dust ignoree (wallet sous le seuil de vente) ~ $0.22. Strategie rearmee."
   },
   {
-    "timestamp": "2026-04-03T16:17:24.278Z",
+    "timestamp": "2026-04-03T16:50:33.565Z",
     "type": "INFO",
-    "message": "[Tracker] System Logged SELL Trade at $66904.47"
+    "message": "[Tracker] System Logged BUY Trade at $67047.11"
   },
   {
-    "timestamp": "2026-04-03T16:17:24.134Z",
+    "timestamp": "2026-04-03T16:50:33.331Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,900.45 | BTC: 0.00030544 | USDC: $4.31"
+    "message": "[Pro] TP:$67086.98 SL:$67030.68 Trail:0.035% Qty:0.00018"
   },
   {
-    "timestamp": "2026-04-03T16:17:24.038Z",
+    "timestamp": "2026-04-03T16:50:33.330Z",
+    "type": "SUCCESS",
+    "message": "📊 [Pro] ENTRY! Score:11 Conv:60% OBI:78% Top:80% EMA:67045/67040 ATR:0.0014%"
+  },
+  {
+    "timestamp": "2026-04-03T16:50:32.344Z",
+    "type": "INFO",
+    "message": "[OrderBook] Dust ignoree (wallet sous le seuil de vente) ~ $0.22. Strategie rearmee."
+  },
+  {
+    "timestamp": "2026-04-03T16:50:31.056Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,044.6 | BTC: 0.00019331 | USDC: $11.60"
+  },
+  {
+    "timestamp": "2026-04-03T16:50:30.945Z",
     "type": "WARN",
-    "message": "⚡ [Pro] OBI Reversal (27.7%) @ $66904.47"
+    "message": "[OrderBook] Position resynchronisee sur le wallet (tracker absent) -> 0.00019 BTC"
   },
   {
-    "timestamp": "2026-04-03T16:17:19.135Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,904.48 | BTC: 0.00015559 | USDC: $14.35"
-  },
-  {
-    "timestamp": "2026-04-03T16:17:18.611Z",
-    "type": "INFO",
-    "message": "[Tracker] System Logged BUY Trade at $66903.37"
-  },
-  {
-    "timestamp": "2026-04-03T16:17:18.376Z",
-    "type": "INFO",
-    "message": "[Pro] TP:$66945.18 SL:$66887.40 Trail:0.035% Qty:0.00015"
-  },
-  {
-    "timestamp": "2026-04-03T16:17:18.375Z",
-    "type": "SUCCESS",
-    "message": "📊 [Pro] ENTRY! Score:12 Conv:80% OBI:72% Top:84% EMA:66910/66920 ATR:0.0038%"
-  },
-  {
-    "timestamp": "2026-04-03T16:17:14.134Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,916.09 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:17:10.822Z",
-    "type": "INFO",
-    "message": "[Tracker] System Logged SELL Trade at $66923.1"
-  },
-  {
-    "timestamp": "2026-04-03T16:17:10.586Z",
+    "timestamp": "2026-04-03T16:50:30.944Z",
     "type": "WARN",
-    "message": "⚡ [Pro] OBI Reversal (28.8%) @ $66923.10"
+    "message": "[OrderBook] BTC detecte sans position suivie dans le tracker: 0.00019 BTC. Adoption du wallet."
   },
   {
-    "timestamp": "2026-04-03T16:17:09.133Z",
+    "timestamp": "2026-04-03T16:50:26.871Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,923.09 | BTC: 0.00026559 | USDC: $6.99"
+    "message": "[Tracker] System Logged SELL Trade at $67033.77"
   },
   {
-    "timestamp": "2026-04-03T16:17:04.132Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,924.04 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:16:59.132Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,924.04 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:16:54.131Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,938.76 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:16:49.130Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,930.02 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:16:44.130Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,923.09 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:16:39.129Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,923.09 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:16:34.129Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,916.67 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:16:29.128Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,916.68 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:16:24.128Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,916.67 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:16:19.127Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,916.67 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:16:14.127Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,916.67 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:16:09.126Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,914.47 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:16:04.126Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,914.47 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:59.125Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,914.47 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:54.124Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,914.47 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:49.124Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,914.47 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:44.123Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,914.47 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:39.123Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,914.47 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:34.122Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,913.68 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:29.122Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,913.67 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:24.121Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,908.51 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:19.121Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,908.52 | BTC: 0.00026559 | USDC: $6.99"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:14.120Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,908.52 | BTC: 0.00014571 | USDC: $15.02"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:10.131Z",
-    "type": "INFO",
-    "message": "[Tracker] System Logged BUY Trade at $66908.51"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:09.897Z",
-    "type": "INFO",
-    "message": "[Pro] TP:$66950.33 SL:$66892.54 Trail:0.035% Qty:0.00012"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:09.896Z",
-    "type": "SUCCESS",
-    "message": "📊 [Pro] ENTRY! Score:12 Conv:80% OBI:84% Top:80% EMA:66905/66907 ATR:0.0033%"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:09.120Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,906 | BTC: 0.00014571 | USDC: $15.02"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:04.119Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,894.74 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:03.590Z",
-    "type": "INFO",
-    "message": "[Tracker] System Logged SELL Trade at $66901.47"
-  },
-  {
-    "timestamp": "2026-04-03T16:15:03.351Z",
+    "timestamp": "2026-04-03T16:50:26.629Z",
     "type": "WARN",
-    "message": "⚡ [Pro] OBI Reversal (34.6%) @ $66901.47"
+    "message": "⚡ [Pro] OBI Reversal (32.7%) @ $67033.77"
   },
   {
-    "timestamp": "2026-04-03T16:14:59.119Z",
+    "timestamp": "2026-04-03T16:50:26.055Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.89 | BTC: 0.00026571 | USDC: $7.00"
+    "message": "BTCUSDC Price: $67,033.78 | BTC: 0.00019331 | USDC: $11.60"
   },
   {
-    "timestamp": "2026-04-03T16:14:54.118Z",
+    "timestamp": "2026-04-03T16:50:21.054Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.88 | BTC: 0.00026571 | USDC: $7.00"
+    "message": "BTCUSDC Price: $67,033.78 | BTC: 0.00019331 | USDC: $11.60"
   },
   {
-    "timestamp": "2026-04-03T16:14:49.116Z",
+    "timestamp": "2026-04-03T16:50:16.053Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.89 | BTC: 0.00026571 | USDC: $7.00"
+    "message": "BTCUSDC Price: $67,033.78 | BTC: 0.00019331 | USDC: $11.60"
   },
   {
-    "timestamp": "2026-04-03T16:14:44.116Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.88 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:14:39.115Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.88 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:14:34.115Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.89 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:14:29.114Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,913.99 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:14:24.114Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,913.99 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:14:19.113Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,913.99 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:14:14.113Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.88 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:14:09.112Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.88 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:14:04.111Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.88 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:59.111Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,913.55 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:54.110Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,913.56 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:49.110Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,913.56 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:44.109Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,913.56 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:39.109Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,907.37 | BTC: 0.00026571 | USDC: $7.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:34.108Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,907.37 | BTC: 0.00013583 | USDC: $15.70"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:32.351Z",
-    "type": "INFO",
-    "message": "[Tracker] System Logged BUY Trade at $66907.36"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:32.114Z",
-    "type": "INFO",
-    "message": "[Pro] TP:$66947.15 SL:$66890.97 Trail:0.035% Qty:0.00013"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:32.114Z",
-    "type": "SUCCESS",
-    "message": "📊 [Pro] ENTRY! Score:11 Conv:60% OBI:84% Top:95% EMA:66907/66909 ATR:0.0009%"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:29.108Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,907.36 | BTC: 0.00013583 | USDC: $15.70"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:24.107Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,906 | BTC: 0.00013583 | USDC: $15.70"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:19.106Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,906 | BTC: 0.00013583 | USDC: $15.70"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:14.106Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,906 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:11.532Z",
-    "type": "INFO",
-    "message": "[Tracker] System Logged SELL Trade at $66906"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:11.295Z",
-    "type": "SUCCESS",
-    "message": "📈 [Pro] Trailing Stop (profit lock)! $66906.00"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:09.105Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.04 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:13:04.105Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,911.49 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:12:59.104Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,912.7 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:12:54.105Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,913.16 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:12:49.103Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,913.15 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:12:44.103Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,921.91 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:12:39.102Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,923.58 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:12:38.959Z",
-    "type": "INFO",
-    "message": "[Pro] TP extension activee: nouveau TP $66930.02 | Trail 0.026%"
-  },
-  {
-    "timestamp": "2026-04-03T16:12:34.101Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,902.02 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:12:29.101Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,902.02 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:12:24.100Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,902.02 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:12:19.100Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,902.02 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:12:14.099Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,904.7 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:12:09.099Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,904.71 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:12:04.098Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,899.32 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:11:59.097Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,887.62 | BTC: 0.00025583 | USDC: $7.68"
-  },
-  {
-    "timestamp": "2026-04-03T16:11:54.097Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,882.05 | BTC: 0.00011597 | USDC: $17.04"
-  },
-  {
-    "timestamp": "2026-04-03T16:11:49.582Z",
-    "type": "INFO",
-    "message": "[Tracker] System Logged BUY Trade at $66872.02"
-  },
-  {
-    "timestamp": "2026-04-03T16:11:49.342Z",
-    "type": "INFO",
-    "message": "[Pro] TP:$66911.79 SL:$66855.64 Trail:0.035% Qty:0.00014"
-  },
-  {
-    "timestamp": "2026-04-03T16:11:49.342Z",
-    "type": "SUCCESS",
-    "message": "📊 [Pro] ENTRY! Score:11 Conv:60% OBI:85% Top:91% EMA:66870/66871 ATR:0.0014%"
-  },
-  {
-    "timestamp": "2026-04-03T16:11:49.096Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,872.01 | BTC: 0.00011597 | USDC: $17.04"
-  },
-  {
-    "timestamp": "2026-04-03T16:11:44.096Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,872.01 | BTC: 0.00011597 | USDC: $17.04"
-  },
-  {
-    "timestamp": "2026-04-03T16:11:39.095Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,867.99 | BTC: 0.00011597 | USDC: $17.04"
-  },
-  {
-    "timestamp": "2026-04-03T16:11:34.095Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,866.96 | BTC: 0.00011597 | USDC: $17.04"
-  },
-  {
-    "timestamp": "2026-04-03T16:11:29.094Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,866.96 | BTC: 0.00023597 | USDC: $9.03"
-  },
-  {
-    "timestamp": "2026-04-03T16:11:28.505Z",
-    "type": "INFO",
-    "message": "[Tracker] System Logged SELL Trade at $66868.2"
-  },
-  {
-    "timestamp": "2026-04-03T16:11:28.269Z",
+    "timestamp": "2026-04-03T16:50:11.261Z",
     "type": "WARN",
-    "message": "🔥 [Pro] Bid Wall absorbed! Emergency exit @ $66868.20"
+    "message": "[OrderBook] Quantite suivie augmentee pour coller au wallet -> 0.00019 BTC"
   },
   {
-    "timestamp": "2026-04-03T16:11:24.094Z",
+    "timestamp": "2026-04-03T16:50:11.052Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,873.54 | BTC: 0.00023597 | USDC: $9.03"
+    "message": "BTCUSDC Price: $67,033.78 | BTC: 0.00019331 | USDC: $11.60"
   },
   {
-    "timestamp": "2026-04-03T16:11:19.093Z",
+    "timestamp": "2026-04-03T16:50:06.051Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,873.54 | BTC: 0.00023597 | USDC: $9.03"
+    "message": "BTCUSDC Price: $67,033.78 | BTC: 0.00001348 | USDC: $23.66"
   },
   {
-    "timestamp": "2026-04-03T16:11:14.092Z",
+    "timestamp": "2026-04-03T16:50:05.517Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,873.53 | BTC: 0.00023597 | USDC: $9.03"
+    "message": "[Tracker] System Logged BUY Trade at $67033.78"
   },
   {
-    "timestamp": "2026-04-03T16:11:09.087Z",
+    "timestamp": "2026-04-03T16:50:05.285Z",
     "type": "INFO",
-    "message": "BTCUSDC Price: $66,873.54 | BTC: 0.00023597 | USDC: $9.03"
+    "message": "[Pro] TP:$67071.62 SL:$67016.93 Trail:0.035% Qty:0.00018"
   },
   {
-    "timestamp": "2026-04-03T16:11:04.086Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,874.71 | BTC: 0.00023597 | USDC: $9.03"
-  },
-  {
-    "timestamp": "2026-04-03T16:10:59.087Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,874.71 | BTC: 0.00023597 | USDC: $9.03"
-  },
-  {
-    "timestamp": "2026-04-03T16:10:54.093Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,874.72 | BTC: 0.00010609 | USDC: $17.72"
-  },
-  {
-    "timestamp": "2026-04-03T16:10:52.084Z",
-    "type": "INFO",
-    "message": "[Tracker] System Logged BUY Trade at $66874.71"
-  },
-  {
-    "timestamp": "2026-04-03T16:10:51.849Z",
-    "type": "INFO",
-    "message": "[Pro] TP:$66910.44 SL:$66857.48 Trail:0.035% Qty:0.00013"
-  },
-  {
-    "timestamp": "2026-04-03T16:10:51.849Z",
+    "timestamp": "2026-04-03T16:50:05.285Z",
     "type": "SUCCESS",
-    "message": "📊 [Pro] ENTRY! Score:9 Conv:20% OBI:78% Top:66% EMA:66875/66875 ATR:0.0000%"
+    "message": "📊 [Pro] ENTRY! Score:10 Conv:40% OBI:87% Top:84% EMA:67034/67036 ATR:0.0012%"
   },
   {
-    "timestamp": "2026-04-03T16:10:44.750Z",
+    "timestamp": "2026-04-03T16:50:01.051Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,036.18 | BTC: 0.00021348 | USDC: $10.27"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:58.232Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged SELL Trade at $67036.18"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:57.993Z",
+    "type": "WARN",
+    "message": "⚡ [Pro] OBI Reversal (37.0%) @ $67036.18"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:57.056Z",
+    "type": "INFO",
+    "message": "[OrderBook] Position restauree: 0.0002 BTC @ $67036.76"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:56.052Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,036.19 | BTC: 0.00000368 | USDC: $24.35"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:53.050Z",
+    "type": "INFO",
+    "message": "[OrderBook] Dust ignoree (wallet sous le seuil de vente) ~ $0.25. Strategie rearmee."
+  },
+  {
+    "timestamp": "2026-04-03T16:49:51.375Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged BUY Trade at $67036.76"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:51.134Z",
+    "type": "INFO",
+    "message": "[Pro] TP:$67074.60 SL:$67019.91 Trail:0.035% Qty:0.00021"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:51.134Z",
+    "type": "SUCCESS",
+    "message": "📊 [Pro] ENTRY! Score:10 Conv:40% OBI:49% Top:73% EMA:67038/67039 ATR:0.0053%"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:51.050Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,036.75 | BTC: 0.00000368 | USDC: $24.35"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:46.050Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,036.76 | BTC: 0.00029368 | USDC: $4.92"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:41.921Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged SELL Trade at $67036.75"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:41.681Z",
+    "type": "SUCCESS",
+    "message": "📈 [Pro] Trailing Stop (profit lock)! $67036.75"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:41.049Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,037.04 | BTC: 0.00029368 | USDC: $4.92"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:36.048Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,071.15 | BTC: 0.00029368 | USDC: $4.92"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:33.092Z",
+    "type": "INFO",
+    "message": "[Pro] TP extension activee: nouveau TP $67096.95 | Trail 0.034%"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:31.049Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,047.43 | BTC: 0.00029368 | USDC: $4.92"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:26.049Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,033.01 | BTC: 0.00029368 | USDC: $4.92"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:21.048Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,026.01 | BTC: 0.00029368 | USDC: $4.92"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:16.048Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,026 | BTC: 0.00029368 | USDC: $4.92"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:12.455Z",
+    "type": "WARN",
+    "message": "[OrderBook] Position resynchronisee sur le wallet (wallet 0.00029 > tracker 0.00027) -> 0.00029 BTC"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:11.047Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,016.88 | BTC: 0.00029368 | USDC: $4.92"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:06.046Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,011.83 | BTC: 0.00029368 | USDC: $4.92"
+  },
+  {
+    "timestamp": "2026-04-03T16:49:01.045Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,011.83 | BTC: 0.00029368 | USDC: $4.92"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:56.046Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,011.83 | BTC: 0.00029368 | USDC: $4.92"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:51.044Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $67,011.84 | BTC: 0.00000396 | USDC: $24.36"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:50.055Z",
+    "type": "ERROR",
+    "message": "Pro BUY échoué"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:50.054Z",
+    "type": "ERROR",
+    "message": "Buy Order Failed for BTCUSDC"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:49.817Z",
+    "type": "INFO",
+    "message": "[Pro] TP:$67053.72 SL:$66995.85 Trail:0.035% Qty:0.00026"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:49.816Z",
+    "type": "SUCCESS",
+    "message": "📊 [Pro] ENTRY! Score:12 Conv:80% OBI:81% Top:78% EMA:67006/66992 ATR:0.0031%"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:48.841Z",
+    "type": "INFO",
+    "message": "[OrderBook] Dust ignoree (wallet sous le seuil de vente) ~ $0.27. Strategie rearmee."
+  },
+  {
+    "timestamp": "2026-04-03T16:48:48.460Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged BUY Trade at $67006.8"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:48.226Z",
+    "type": "INFO",
+    "message": "[Pro] TP:$67050.70 SL:$66991.23 Trail:0.035% Qty:0.00029"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:48.226Z",
+    "type": "SUCCESS",
+    "message": "📊 [Pro] ENTRY! Score:14 Conv:100% OBI:68% Top:95% EMA:66999/66987 ATR:0.0026%"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:46.044Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,996.9 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:41.516Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged SELL Trade at $66996.56"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:41.279Z",
+    "type": "SUCCESS",
+    "message": "🚀 [Pro] Take-Profit! $66996.56 ≥ $66994.89"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:41.044Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,996.57 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:36.044Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,984.11 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:31.044Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,984.11 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:26.043Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,982.81 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:21.043Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,982.81 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:16.043Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,967.38 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:11.042Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,967.37 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:06.043Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,967.37 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:48:01.042Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,967.38 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:47:56.043Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,967.38 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:47:51.042Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,967.38 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:47:46.043Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,967.38 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:47:41.042Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,967.38 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:47:36.042Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,967.38 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:47:31.042Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,967.38 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:47:26.042Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,966.81 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:47:21.042Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,963.43 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:47:16.041Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,963.43 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:47:11.041Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,963.44 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:47:06.041Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,956.4 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:47:01.040Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,956.4 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:56.041Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,956.4 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:51.039Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,956.4 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:46.039Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,956.4 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:41.040Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,956.4 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:36.038Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,956.4 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:31.039Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,953.06 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:26.038Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,953.06 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:21.039Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,953.06 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:16.037Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,953.06 | BTC: 0.00021396 | USDC: $10.30"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:13.916Z",
+    "type": "WARN",
+    "message": "[OrderBook] Quantite suivie augmentee pour coller au wallet -> 0.00021 BTC"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:11.036Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,953.05 | BTC: 0.00001415 | USDC: $23.69"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:10.159Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged BUY Trade at $66953.05"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:09.921Z",
+    "type": "INFO",
+    "message": "[Pro] TP:$66994.89 SL:$66937.07 Trail:0.035% Qty:0.0002"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:09.921Z",
+    "type": "SUCCESS",
+    "message": "📊 [Pro] ENTRY! Score:12 Conv:80% OBI:71% Top:83% EMA:66952/66958 ATR:0.0030%"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:06.035Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,949.76 | BTC: 0.00021415 | USDC: $10.31"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:01.305Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged SELL Trade at $66949.76"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:01.072Z",
+    "type": "WARN",
+    "message": "⚡ [Pro] OBI Reversal (34.5%) @ $66949.76"
+  },
+  {
+    "timestamp": "2026-04-03T16:46:01.034Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,944.67 | BTC: 0.00021415 | USDC: $10.31"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:57.283Z",
+    "type": "INFO",
+    "message": "[OrderBook] Position restauree: 0.0002 BTC @ $66960.38"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:56.033Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,953.88 | BTC: 0.00000435 | USDC: $24.37"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:55.970Z",
+    "type": "INFO",
+    "message": "[OrderBook] Dust ignoree (wallet sous le seuil de vente) ~ $0.29. Strategie rearmee."
+  },
+  {
+    "timestamp": "2026-04-03T16:45:53.018Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged BUY Trade at $66960.38"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:52.780Z",
+    "type": "INFO",
+    "message": "[Pro] TP:$67000.20 SL:$66943.98 Trail:0.035% Qty:0.00021"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:52.780Z",
+    "type": "SUCCESS",
+    "message": "📊 [Pro] ENTRY! Score:11 Conv:60% OBI:69% Top:67% EMA:66961/66967 ATR:0.0016%"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:51.032Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,960.38 | BTC: 0.00000435 | USDC: $24.37"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:46.033Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,961.44 | BTC: 0.00000435 | USDC: $24.37"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:41.033Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,963.97 | BTC: 0.00036435 | USDC: $0.29"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:37.619Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged SELL Trade at $66963.97"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:37.386Z",
+    "type": "WARN",
+    "message": "🔥 [Pro] Bid Wall absorbed! Emergency exit @ $66963.97"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:36.490Z",
+    "type": "WARN",
+    "message": "[OrderBook] Position resynchronisee sur le wallet (tracker absent) -> 0.00036 BTC"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:36.489Z",
+    "type": "WARN",
+    "message": "[OrderBook] BTC detecte sans position suivie dans le tracker: 0.00036 BTC. Adoption du wallet."
+  },
+  {
+    "timestamp": "2026-04-03T16:45:36.033Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,973.39 | BTC: 0.00001468 | USDC: $23.73"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:35.897Z",
+    "type": "INFO",
+    "message": "[OrderBook] Dust ignoree (wallet sous le seuil de vente) ~ $0.98. Strategie rearmee."
+  },
+  {
+    "timestamp": "2026-04-03T16:45:35.897Z",
+    "type": "WARN",
+    "message": "[OrderBook] Quantite suivie reduite pour coller au wallet -> 0.00001 BTC"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:34.620Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged BUY Trade at $66973.38"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:34.386Z",
+    "type": "INFO",
+    "message": "[Pro] TP:$67011.19 SL:$66956.55 Trail:0.035% Qty:0.0002"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:34.386Z",
+    "type": "SUCCESS",
+    "message": "📊 [Pro] ENTRY! Score:10 Conv:40% OBI:59% Top:74% EMA:66974/66976 ATR:0.0025%"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:33.623Z",
+    "type": "INFO",
+    "message": "[OrderBook] Dust ignoree (wallet sous le seuil de vente) ~ $0.98. Strategie rearmee."
+  },
+  {
+    "timestamp": "2026-04-03T16:45:33.623Z",
+    "type": "WARN",
+    "message": "[OrderBook] Quantite suivie reduite pour coller au wallet -> 0.00001 BTC"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:33.105Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged BUY Trade at $66975.05"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:32.867Z",
+    "type": "INFO",
+    "message": "[Pro] TP:$67008.81 SL:$66957.37 Trail:0.035% Qty:0.00015"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:32.867Z",
+    "type": "SUCCESS",
+    "message": "📊 [Pro] ENTRY! Score:8 Conv:0% OBI:65% Top:81% EMA:66975/66977 ATR:0.0025%"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:31.033Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,975.06 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:26.768Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged SELL Trade at $66975.05"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:26.531Z",
+    "type": "WARN",
+    "message": "⚡ [Pro] OBI Reversal (30.5%) @ $66975.05"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:26.032Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,981.44 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:21.031Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,972.51 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:16.032Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,980.28 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:11.032Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,984.12 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:06.031Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,987.14 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:45:01.028Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,981.6 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:56.028Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,981.59 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:51.028Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,972.5 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:46.029Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,944.66 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:41.035Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,944.65 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:37.230Z",
+    "type": "WARN",
+    "message": "[OrderBook] Position resynchronisee sur le wallet (wallet 0.0003 > tracker 0.0001) -> 0.00029 BTC"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:36.709Z",
     "type": "SUCCESS",
     "message": "✅ WebSocket connected — Real-time data active"
   },
   {
-    "timestamp": "2026-04-03T16:10:44.082Z",
+    "timestamp": "2026-04-03T16:44:36.026Z",
     "type": "INFO",
     "message": "🔌 Connecting to WebSocket: btcusdc@trade, btcusdc@depth20@100ms, btcusdc@bookTicker"
   },
   {
-    "timestamp": "2026-04-03T16:10:43.611Z",
+    "timestamp": "2026-04-03T16:44:36.026Z",
+    "type": "INFO",
+    "message": "[Replay] Enregistrement marche actif -> /home/alexandrel/Dev/binance_bot/.binance_bot/replays/BTCUSDC-live-2026-04-03T16-44-36-026Z.jsonl"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:35.314Z",
     "type": "INFO",
     "message": "🤖 Starting bot loop for pair: BTCUSDC"
   },
   {
-    "timestamp": "2026-04-03T16:10:43.611Z",
+    "timestamp": "2026-04-03T16:44:35.314Z",
     "type": "SUCCESS",
     "message": "🌐 Web Pro Dashboard running natively at http://localhost:3000"
   },
   {
-    "timestamp": "2026-04-03T16:10:43.607Z",
+    "timestamp": "2026-04-03T16:44:35.312Z",
     "type": "INFO",
     "message": "Found 13 assets with balance."
+  },
+  {
+    "timestamp": "2026-04-03T16:44:34.697Z",
+    "type": "INFO",
+    "message": "🚀 Initializing Scalable Binance Spot Trading Bot in 🔴 LIVE mode..."
+  },
+  {
+    "timestamp": "2026-04-03T16:44:33.768Z",
+    "type": "INFO",
+    "message": "⏹️ Bot stopped for BTCUSDC."
+  },
+  {
+    "timestamp": "2026-04-03T16:44:33.768Z",
+    "type": "INFO",
+    "message": "[Replay] Session enregistree -> /home/alexandrel/Dev/binance_bot/.binance_bot/replays/BTCUSDC-live-2026-04-03T16-39-10-662Z.jsonl"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:33.767Z",
+    "type": "INFO",
+    "message": "🔌 WebSocket feed stopped"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:30.694Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,944.66 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:25.694Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,944.66 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:20.693Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,944.66 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:15.693Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,944.66 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:10.693Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,944.66 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:05.691Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,942.15 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:44:00.690Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,942.16 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:43:55.689Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,942.16 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:43:50.690Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,947.9 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:43:47.188Z",
+    "type": "WARN",
+    "message": "[Pro] OBI reversal ignore: notional 6.03 < 6.06 pour sortir"
+  },
+  {
+    "timestamp": "2026-04-03T16:43:45.689Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,958.92 | BTC: 0.00030468 | USDC: $4.33"
+  },
+  {
+    "timestamp": "2026-04-03T16:43:40.688Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,958.92 | BTC: 0.00020478 | USDC: $11.02"
+  },
+  {
+    "timestamp": "2026-04-03T16:43:38.561Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged BUY Trade at $66958.92"
+  },
+  {
+    "timestamp": "2026-04-03T16:43:38.322Z",
+    "type": "INFO",
+    "message": "[Pro] TP:$66998.74 SL:$66942.52 Trail:0.035% Qty:0.0001"
+  },
+  {
+    "timestamp": "2026-04-03T16:43:38.322Z",
+    "type": "SUCCESS",
+    "message": "📊 [Pro] ENTRY! Score:11 Conv:60% OBI:67% Top:87% EMA:66957/66959 ATR:0.0013%"
+  },
+  {
+    "timestamp": "2026-04-03T16:43:35.687Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,958.92 | BTC: 0.00020478 | USDC: $11.02"
+  },
+  {
+    "timestamp": "2026-04-03T16:43:30.687Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,958.92 | BTC: 0.00020478 | USDC: $11.02"
+  },
+  {
+    "timestamp": "2026-04-03T16:43:25.687Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,958.92 | BTC: 0.00020478 | USDC: $11.02"
+  },
+  {
+    "timestamp": "2026-04-03T16:43:20.686Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,951.37 | BTC: 0.00020478 | USDC: $11.02"
+  },
+  {
+    "timestamp": "2026-04-03T16:43:15.685Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,951.37 | BTC: 0.00020478 | USDC: $11.02"
   }
 ]

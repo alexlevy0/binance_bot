@@ -29,6 +29,25 @@ interface MarketRegimeAssessment {
     note: string;
 }
 
+export interface OrderBookScalpingTuning {
+    maxPositionNotional?: number;
+    baseRiskAllocation?: number;
+    scoreRiskBonus?: number;
+    minRiskAllocation?: number;
+    maxRiskAllocation?: number;
+    dailyLossLimitQuote?: number;
+    dailyCautionLossQuote?: number;
+    bookSignalWindow?: number;
+    minAtrPct?: number;
+    maxTickVelocityPct?: number;
+    topObiEntryThreshold?: number;
+    depthRatioEntryThreshold?: number;
+    persistenceAskConsumptionThreshold?: number;
+    thinNearDepthShareThreshold?: number;
+    hostileBidConsumptionThreshold?: number;
+    absorptionBiasThreshold?: number;
+}
+
 /**
  * OrderBookScalpingStrategy v2 — Pro Edition
  * 
@@ -94,6 +113,12 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
     private lastBestAskQty: number = 0;
     private estimatedFeeRate: number = 0.001;
     private estimatedSlippageRate: number = 0.00025;
+    private topObiEntryThreshold: number = 0.56;
+    private depthRatioEntryThreshold: number = 1.08;
+    private persistenceAskConsumptionThreshold: number = 0.04;
+    private thinNearDepthShareThreshold: number = 0.18;
+    private hostileBidConsumptionThreshold: number = 0.18;
+    private absorptionBiasThreshold: number = 0.10;
 
     // ── Dual EMA State ──
     private emaFast: number = 0;       // Fast EMA (5 ticks)
@@ -160,7 +185,8 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         tpMultiplier: number = 4.2,
         slMultiplier: number = 2.2,
         minNotional: number = 6.0,
-        minScore: number = 8
+        minScore: number = 8,
+        tuning: OrderBookScalpingTuning = {}
     ) {
         this.maxSpreadPct = maxSpreadPct;
         this.obiThreshold = obiThreshold;
@@ -169,6 +195,31 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         this.slMultiplier = slMultiplier;
         this.minNotional = minNotional;
         this.minScore = minScore;
+        this.applyTuning(tuning);
+    }
+
+    private applyTuning(tuning: OrderBookScalpingTuning) {
+        if (tuning.maxPositionNotional != null) this.maxPositionNotional = tuning.maxPositionNotional;
+        if (tuning.baseRiskAllocation != null) this.baseRiskAllocation = tuning.baseRiskAllocation;
+        if (tuning.scoreRiskBonus != null) this.scoreRiskBonus = tuning.scoreRiskBonus;
+        if (tuning.minRiskAllocation != null) this.minRiskAllocation = tuning.minRiskAllocation;
+        if (tuning.maxRiskAllocation != null) this.maxRiskAllocation = tuning.maxRiskAllocation;
+        if (tuning.dailyLossLimitQuote != null) {
+            this.dailyLossLimitQuote = tuning.dailyLossLimitQuote;
+            if (tuning.dailyCautionLossQuote == null) {
+                this.dailyCautionLossQuote = Math.max(0.5, tuning.dailyLossLimitQuote * 0.5);
+            }
+        }
+        if (tuning.dailyCautionLossQuote != null) this.dailyCautionLossQuote = tuning.dailyCautionLossQuote;
+        if (tuning.bookSignalWindow != null) this.bookSignalWindow = Math.max(4, Math.round(tuning.bookSignalWindow));
+        if (tuning.minAtrPct != null) this.minAtrPct = tuning.minAtrPct;
+        if (tuning.maxTickVelocityPct != null) this.maxTickVelocityPct = tuning.maxTickVelocityPct;
+        if (tuning.topObiEntryThreshold != null) this.topObiEntryThreshold = tuning.topObiEntryThreshold;
+        if (tuning.depthRatioEntryThreshold != null) this.depthRatioEntryThreshold = tuning.depthRatioEntryThreshold;
+        if (tuning.persistenceAskConsumptionThreshold != null) this.persistenceAskConsumptionThreshold = tuning.persistenceAskConsumptionThreshold;
+        if (tuning.thinNearDepthShareThreshold != null) this.thinNearDepthShareThreshold = tuning.thinNearDepthShareThreshold;
+        if (tuning.hostileBidConsumptionThreshold != null) this.hostileBidConsumptionThreshold = tuning.hostileBidConsumptionThreshold;
+        if (tuning.absorptionBiasThreshold != null) this.absorptionBiasThreshold = tuning.absorptionBiasThreshold;
     }
 
     // ── EMA Calculation ──
@@ -312,7 +363,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
     ): MarketRegimeAssessment {
         const thinMarket =
             smoothed.smoothedSpreadPct > this.maxSpreadPct * 0.92 ||
-            (smoothed.smoothedNearDepthShare < 0.18 && smoothed.smoothedSpreadPct > this.maxSpreadPct * 0.70);
+            (smoothed.smoothedNearDepthShare < this.thinNearDepthShareThreshold && smoothed.smoothedSpreadPct > this.maxSpreadPct * 0.70);
         const chopMarket =
             atrPct < this.minAtrPct * 1.25 ||
             (
@@ -325,8 +376,8 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             smoothed.smoothedObi < 0.49 &&
             smoothed.smoothedTopObi < 0.49 &&
             smoothed.smoothedMicroPriceEdgePct < -0.0006 &&
-            smoothed.smoothedBidConsumption > 0.18 &&
-            smoothed.smoothedAbsorptionBias < -0.10;
+            smoothed.smoothedBidConsumption > this.hostileBidConsumptionThreshold &&
+            smoothed.smoothedAbsorptionBias < -this.absorptionBiasThreshold;
         const trendMarket =
             !thinMarket &&
             !hostileMarket &&
@@ -903,7 +954,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             const obiOk = smoothedBookState.smoothedObi > this.obiThreshold;
 
             // ── Filter 4: Top-of-book OBI ──
-            const topObiOk = smoothedBookState.smoothedTopObi > 0.56;
+            const topObiOk = smoothedBookState.smoothedTopObi > this.topObiEntryThreshold;
 
             // ── Filter 5: Spread ──
             const spreadOk = smoothedBookState.smoothedSpreadPct < this.maxSpreadPct;
@@ -917,14 +968,14 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
 
             // ── Filter 8: Microprice & best-bid dominance, lisses ──
             const microPriceOk = smoothedBookState.smoothedMicroPriceEdgePct > 0;
-            const depthRatioOk = smoothedBookState.smoothedDepthRatio > 1.08;
+            const depthRatioOk = smoothedBookState.smoothedDepthRatio > this.depthRatioEntryThreshold;
             const persistenceOk =
                 smoothedBookState.obiSlope >= -0.001 &&
                 smoothedBookState.topObiSlope >= -0.0015 &&
-                smoothedBookState.smoothedAskConsumption > 0.04;
+                smoothedBookState.smoothedAskConsumption > this.persistenceAskConsumptionThreshold;
 
             // ── Bonus: Absorption signal ──
-            const absorptionBoost = absorption.bullish || smoothedBookState.smoothedAbsorptionBias > 0.10; // Ask wall eating = strong buy
+            const absorptionBoost = absorption.bullish || smoothedBookState.smoothedAbsorptionBias > this.absorptionBiasThreshold; // Ask wall eating = strong buy
 
             // Score system: each filter adds points, trade when score >= threshold
             let score = 0;
@@ -1109,7 +1160,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
                 this.tpExtensionsUsed < this.maxTpExtensions &&
                 price >= this.takeProfitPrice &&
                 smoothedBookState.smoothedObi > Math.max(this.obiThreshold + 0.04, 0.63) &&
-                smoothedBookState.smoothedTopObi > 0.59 &&
+                smoothedBookState.smoothedTopObi > Math.max(this.topObiEntryThreshold + 0.03, 0.59) &&
                 this.emaFast > this.emaSlow &&
                 smoothedBookState.smoothedMicroPriceEdgePct > 0 &&
                 tickVelocity < this.maxTickVelocityPct * 0.8;
@@ -1216,7 +1267,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             }
 
             // 4. Bearish Absorption while holding → early exit
-            if ((absorption.bearish || smoothedBookState.smoothedAbsorptionBias < -0.10) && price < this.buyPrice) {
+            if ((absorption.bearish || smoothedBookState.smoothedAbsorptionBias < -this.absorptionBiasThreshold) && price < this.buyPrice) {
                 if (!canSendSellOrder) {
                     this.blockExitBecauseExchangeFilters(price, sellQty, "Emergency exit");
                     return;

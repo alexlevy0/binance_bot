@@ -1,5 +1,40 @@
 [
   {
+    "timestamp": "2026-04-03T18:38:58.218Z",
+    "type": "SUCCESS",
+    "message": "✅ WebSocket connected — Real-time data active"
+  },
+  {
+    "timestamp": "2026-04-03T18:38:57.286Z",
+    "type": "INFO",
+    "message": "🔌 Connecting to WebSocket: btcusdc@trade, btcusdc@depth20@100ms, btcusdc@bookTicker"
+  },
+  {
+    "timestamp": "2026-04-03T18:38:57.285Z",
+    "type": "INFO",
+    "message": "[Replay] Enregistrement marche actif -> /home/alexandrel/Dev/binance_bot/.binance_bot/replays/BTCUSDC-live.jsonl (append session)"
+  },
+  {
+    "timestamp": "2026-04-03T18:38:56.029Z",
+    "type": "INFO",
+    "message": "🤖 Starting bot loop for pair: BTCUSDC"
+  },
+  {
+    "timestamp": "2026-04-03T18:38:56.029Z",
+    "type": "SUCCESS",
+    "message": "🌐 Web Pro Dashboard running natively at http://localhost:3000"
+  },
+  {
+    "timestamp": "2026-04-03T18:38:56.026Z",
+    "type": "INFO",
+    "message": "Found 13 assets with balance."
+  },
+  {
+    "timestamp": "2026-04-03T18:38:55.411Z",
+    "type": "INFO",
+    "message": "🚀 Initializing Scalable Binance Spot Trading Bot in 🔴 LIVE mode..."
+  },
+  {
     "timestamp": "2026-04-03T18:27:28.977Z",
     "type": "INFO",
     "message": "⏹️ Bot stopped for BTCUSDC."
@@ -963,40 +998,5 @@
     "timestamp": "2026-04-03T18:15:51.818Z",
     "type": "INFO",
     "message": "BTCUSDC Price: $66,843.51 | BTC: 0.00027251 | USDC: $5.00"
-  },
-  {
-    "timestamp": "2026-04-03T18:15:46.818Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,843.51 | BTC: 0.00027251 | USDC: $5.00"
-  },
-  {
-    "timestamp": "2026-04-03T18:15:41.818Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,843.51 | BTC: 0.00027251 | USDC: $5.00"
-  },
-  {
-    "timestamp": "2026-04-03T18:15:36.817Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,848.4 | BTC: 0.00027251 | USDC: $5.00"
-  },
-  {
-    "timestamp": "2026-04-03T18:15:31.815Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,848.03 | BTC: 0.00027251 | USDC: $5.00"
-  },
-  {
-    "timestamp": "2026-04-03T18:15:26.814Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,848.03 | BTC: 0.00027251 | USDC: $5.00"
-  },
-  {
-    "timestamp": "2026-04-03T18:15:21.814Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,842.95 | BTC: 0.00027251 | USDC: $5.00"
-  },
-  {
-    "timestamp": "2026-04-03T18:15:16.814Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,837.96 | BTC: 0.00027251 | USDC: $5.00"
   }
 ]

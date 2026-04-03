@@ -3,7 +3,7 @@ import { basename, resolve } from "path";
 import { Exchange, type SymbolTradingRules } from "../core/exchange";
 import { Tracker } from "../core/tracker";
 import { Logger } from "../utils/logger";
-import { OrderBookScalpingStrategy } from "../strategies/orderBookScalping";
+import { OrderBookScalpingStrategy, type OrderBookScalpingTuning } from "../strategies/orderBookScalping";
 import type { TickContext } from "../strategies";
 import { getReplayDirectory } from "./marketRecorder";
 import type { RecordedMarketTick, ReplayFileEntry, ReplaySessionHeader } from "./types";
@@ -17,6 +17,7 @@ interface ReplayModeOptions {
 }
 
 interface StrategyPreset {
+    label: string;
     maxSpreadPct: number;
     obiThreshold: number;
     obiExitThreshold: number;
@@ -24,6 +25,7 @@ interface StrategyPreset {
     slMultiplier: number;
     minNotional: number;
     minScore: number;
+    tuning: OrderBookScalpingTuning;
 }
 
 interface ClosedTrade {
@@ -366,6 +368,7 @@ function loadReplaySession(filePath: string): ReplaySession {
 
 function getDefaultPreset(header: ReplaySessionHeader): StrategyPreset {
     return {
+        label: 'baseline',
         maxSpreadPct: 0.05,
         obiThreshold: 0.58,
         obiExitThreshold: 0.38,
@@ -373,37 +376,169 @@ function getDefaultPreset(header: ReplaySessionHeader): StrategyPreset {
         slMultiplier: 2.2,
         minNotional: Math.max(6, header.exchangeRules.minNotional || 0),
         minScore: 8,
+        tuning: {
+            baseRiskAllocation: 0.18,
+            maxPositionNotional: 18,
+            dailyLossLimitQuote: 1.5,
+            bookSignalWindow: 12,
+            minAtrPct: 0.002,
+            topObiEntryThreshold: 0.56,
+            depthRatioEntryThreshold: 1.08,
+            persistenceAskConsumptionThreshold: 0.04,
+            thinNearDepthShareThreshold: 0.18,
+            hostileBidConsumptionThreshold: 0.18,
+            absorptionBiasThreshold: 0.10,
+        },
     };
 }
 
 function buildOptimizationPresets(header: ReplaySessionHeader): StrategyPreset[] {
-    const minNotional = Math.max(6, header.exchangeRules.minNotional || 0);
-    const spreads = [0.04, 0.05];
-    const obiThresholds = [0.56, 0.58, 0.60];
-    const obiExits = [0.36, 0.38, 0.40];
-    const tpMultipliers = [3.8, 4.2, 4.8];
-    const slMultipliers = [1.8, 2.2, 2.6];
-    const minScores = [7, 8, 9];
-    const presets: StrategyPreset[] = [];
+    const baseline = getDefaultPreset(header);
+    const styles: Array<Omit<StrategyPreset, 'label' | 'tuning' | 'minNotional'>> = [
+        {
+            maxSpreadPct: 0.04,
+            obiThreshold: 0.56,
+            obiExitThreshold: 0.36,
+            tpMultiplier: 3.8,
+            slMultiplier: 1.8,
+            minScore: 7,
+        },
+        {
+            maxSpreadPct: 0.045,
+            obiThreshold: 0.57,
+            obiExitThreshold: 0.37,
+            tpMultiplier: 4.2,
+            slMultiplier: 2.0,
+            minScore: 8,
+        },
+        {
+            maxSpreadPct: 0.05,
+            obiThreshold: 0.58,
+            obiExitThreshold: 0.38,
+            tpMultiplier: 4.2,
+            slMultiplier: 2.2,
+            minScore: 8,
+        },
+        {
+            maxSpreadPct: 0.04,
+            obiThreshold: 0.60,
+            obiExitThreshold: 0.39,
+            tpMultiplier: 4.8,
+            slMultiplier: 2.2,
+            minScore: 9,
+        },
+        {
+            maxSpreadPct: 0.045,
+            obiThreshold: 0.59,
+            obiExitThreshold: 0.36,
+            tpMultiplier: 4.2,
+            slMultiplier: 1.8,
+            minScore: 8,
+        },
+    ];
 
-    for (const maxSpreadPct of spreads) {
-        for (const obiThreshold of obiThresholds) {
-            for (const obiExitThreshold of obiExits) {
-                for (const tpMultiplier of tpMultipliers) {
-                    for (const slMultiplier of slMultipliers) {
-                        for (const minScore of minScores) {
-                            presets.push({
-                                maxSpreadPct,
-                                obiThreshold,
-                                obiExitThreshold,
-                                tpMultiplier,
-                                slMultiplier,
-                                minNotional,
-                                minScore,
-                            });
-                        }
-                    }
-                }
+    const tuningProfiles: Array<{ label: string, tuning: OrderBookScalpingTuning }> = [
+        {
+            label: 'compact-guard',
+            tuning: {
+                baseRiskAllocation: 0.14,
+                maxPositionNotional: 12,
+                dailyLossLimitQuote: 1.0,
+                bookSignalWindow: 14,
+                minAtrPct: 0.0022,
+                topObiEntryThreshold: 0.57,
+                depthRatioEntryThreshold: 1.10,
+                persistenceAskConsumptionThreshold: 0.05,
+                thinNearDepthShareThreshold: 0.20,
+                hostileBidConsumptionThreshold: 0.16,
+                absorptionBiasThreshold: 0.08,
+            },
+        },
+        {
+            label: 'baseline-balance',
+            tuning: { ...baseline.tuning },
+        },
+        {
+            label: 'trend-follow',
+            tuning: {
+                baseRiskAllocation: 0.20,
+                maxPositionNotional: 20,
+                dailyLossLimitQuote: 1.8,
+                bookSignalWindow: 10,
+                minAtrPct: 0.0018,
+                topObiEntryThreshold: 0.55,
+                depthRatioEntryThreshold: 1.05,
+                persistenceAskConsumptionThreshold: 0.03,
+                thinNearDepthShareThreshold: 0.17,
+                hostileBidConsumptionThreshold: 0.20,
+                absorptionBiasThreshold: 0.10,
+            },
+        },
+        {
+            label: 'patient-filter',
+            tuning: {
+                baseRiskAllocation: 0.16,
+                maxPositionNotional: 16,
+                dailyLossLimitQuote: 1.2,
+                bookSignalWindow: 16,
+                minAtrPct: 0.0024,
+                topObiEntryThreshold: 0.58,
+                depthRatioEntryThreshold: 1.12,
+                persistenceAskConsumptionThreshold: 0.05,
+                thinNearDepthShareThreshold: 0.19,
+                hostileBidConsumptionThreshold: 0.17,
+                absorptionBiasThreshold: 0.09,
+            },
+        },
+        {
+            label: 'offensive-trend',
+            tuning: {
+                baseRiskAllocation: 0.22,
+                maxPositionNotional: 22,
+                dailyLossLimitQuote: 2.2,
+                bookSignalWindow: 8,
+                minAtrPct: 0.0016,
+                topObiEntryThreshold: 0.55,
+                depthRatioEntryThreshold: 1.04,
+                persistenceAskConsumptionThreshold: 0.025,
+                thinNearDepthShareThreshold: 0.16,
+                hostileBidConsumptionThreshold: 0.21,
+                absorptionBiasThreshold: 0.11,
+            },
+        },
+    ];
+
+    const presets: StrategyPreset[] = [];
+    const seen = new Set<string>();
+
+    for (const style of styles) {
+        for (const profile of tuningProfiles) {
+            const preset: StrategyPreset = {
+                label: `${profile.label}:${style.obiThreshold.toFixed(2)}-${style.minScore}`,
+                maxSpreadPct: style.maxSpreadPct,
+                obiThreshold: style.obiThreshold,
+                obiExitThreshold: style.obiExitThreshold,
+                tpMultiplier: style.tpMultiplier,
+                slMultiplier: style.slMultiplier,
+                minNotional: baseline.minNotional,
+                minScore: style.minScore,
+                tuning: { ...profile.tuning },
+            };
+
+            const dedupeKey = JSON.stringify({
+                maxSpreadPct: preset.maxSpreadPct,
+                obiThreshold: preset.obiThreshold,
+                obiExitThreshold: preset.obiExitThreshold,
+                tpMultiplier: preset.tpMultiplier,
+                slMultiplier: preset.slMultiplier,
+                minNotional: preset.minNotional,
+                minScore: preset.minScore,
+                tuning: preset.tuning,
+            });
+
+            if (!seen.has(dedupeKey)) {
+                seen.add(dedupeKey);
+                presets.push(preset);
             }
         }
     }
@@ -425,7 +560,8 @@ async function runSingleReplay(
                 preset.tpMultiplier,
                 preset.slMultiplier,
                 preset.minNotional,
-                preset.minScore
+                preset.minScore,
+                preset.tuning
             );
 
             const exchange = new ReplayExchange(
@@ -496,12 +632,18 @@ async function runSingleReplay(
 
 function formatPreset(preset: StrategyPreset): string {
     return [
+        preset.label,
         `spread=${preset.maxSpreadPct.toFixed(3)}`,
         `obi=${preset.obiThreshold.toFixed(2)}`,
         `obiExit=${preset.obiExitThreshold.toFixed(2)}`,
         `tp=${preset.tpMultiplier.toFixed(1)}`,
         `sl=${preset.slMultiplier.toFixed(1)}`,
         `score=${preset.minScore}`,
+        `risk=${preset.tuning.baseRiskAllocation?.toFixed(2) ?? '-'}`,
+        `cap=${preset.tuning.maxPositionNotional?.toFixed(0) ?? '-'}`,
+        `dayStop=${preset.tuning.dailyLossLimitQuote?.toFixed(2) ?? '-'}`,
+        `win=${preset.tuning.bookSignalWindow ?? '-'}`,
+        `atr=${preset.tuning.minAtrPct?.toFixed(4) ?? '-'}`,
     ].join(' | ');
 }
 

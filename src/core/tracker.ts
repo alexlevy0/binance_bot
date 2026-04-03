@@ -12,14 +12,17 @@ export interface TradeRecord {
     quantity: number;
 }
 
+export interface OpenPosition {
+    entryPrice: number;
+    quantity: number;
+}
+
 class PerformanceTracker {
     public trades: TradeRecord[] = [];
     public realizedPnl: number = 0;
     private totalWinningTrades: number = 0;
     private totalLosingTrades: number = 0;
-
-    // Simple state to calculate round-trip PnL
-    private lastBuyPrice: number | null = null;
+    private openPosition: OpenPosition | null = null;
 
     constructor() {
         this.init();
@@ -36,7 +39,20 @@ class PerformanceTracker {
                 this.realizedPnl = data.realizedPnl || 0;
                 this.totalWinningTrades = data.totalWinningTrades || 0;
                 this.totalLosingTrades = data.totalLosingTrades || 0;
-                this.lastBuyPrice = data.lastBuyPrice || null;
+                if (data.openPosition?.entryPrice && data.openPosition?.quantity) {
+                    this.openPosition = {
+                        entryPrice: data.openPosition.entryPrice,
+                        quantity: data.openPosition.quantity,
+                    };
+                } else if (data.lastBuyPrice != null) {
+                    const lastBuyTrade = [...this.trades].reverse().find((trade: TradeRecord) => trade.side === 'BUY');
+                    if (lastBuyTrade) {
+                        this.openPosition = {
+                            entryPrice: data.lastBuyPrice,
+                            quantity: lastBuyTrade.quantity,
+                        };
+                    }
+                }
             } catch (e) {
                 // ignore JSON errors and start fresh
             }
@@ -50,7 +66,7 @@ class PerformanceTracker {
                 realizedPnl: this.realizedPnl,
                 totalWinningTrades: this.totalWinningTrades,
                 totalLosingTrades: this.totalLosingTrades,
-                lastBuyPrice: this.lastBuyPrice
+                openPosition: this.openPosition,
             };
             writeFileSync(TRACKER_FILE, JSON.stringify(data, null, 2));
         } catch (e) {
@@ -63,21 +79,50 @@ class PerformanceTracker {
         Logger.info(`[Tracker] System Logged ${side} Trade at $${price}`);
 
         if (side === 'BUY') {
-            this.lastBuyPrice = price;
-        } else if (side === 'SELL' && this.lastBuyPrice !== null) {
-            // Realized calculation
-            const pnl = (price - this.lastBuyPrice) * quantity;
+            if (!this.openPosition) {
+                this.openPosition = { entryPrice: price, quantity };
+            } else {
+                const totalQuantity = this.openPosition.quantity + quantity;
+                const weightedEntryPrice = (
+                    this.openPosition.entryPrice * this.openPosition.quantity +
+                    price * quantity
+                ) / totalQuantity;
+
+                this.openPosition = {
+                    entryPrice: weightedEntryPrice,
+                    quantity: totalQuantity,
+                };
+            }
+        } else if (side === 'SELL' && this.openPosition) {
+            const closedQuantity = Math.min(quantity, this.openPosition.quantity);
+            const pnl = (price - this.openPosition.entryPrice) * closedQuantity;
             this.realizedPnl += pnl;
 
-            if (pnl > 0) {
-                this.totalWinningTrades++;
-            } else {
-                this.totalLosingTrades++;
+            if (closedQuantity > 0) {
+                if (pnl > 0) {
+                    this.totalWinningTrades++;
+                } else {
+                    this.totalLosingTrades++;
+                }
             }
-            this.lastBuyPrice = null;
+
+            const remainingQuantity = this.openPosition.quantity - closedQuantity;
+            this.openPosition = remainingQuantity > 0
+                ? { entryPrice: this.openPosition.entryPrice, quantity: remainingQuantity }
+                : null;
         }
 
         this.save(); // Persist to disk seamlessly
+    }
+
+    public getOpenPosition(): OpenPosition | null {
+        if (!this.openPosition) return null;
+        return { ...this.openPosition };
+    }
+
+    public setOpenPosition(position: OpenPosition | null) {
+        this.openPosition = position ? { ...position } : null;
+        this.save();
     }
 
     public getWinRate(): number {

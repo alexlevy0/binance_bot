@@ -25,6 +25,8 @@ export class TradingBot {
     // Throttle: don't run strategy on every single trade event
     private lastStrategyRunMs: number = 0;
     private strategyThrottleMs: number = 500; // Run strategy max 2x/sec
+    private strategyRunInFlight: boolean = false;
+    private pendingStrategyPrice: number | null = null;
 
     // Balance refresh interval
     private balanceIntervalId: ReturnType<typeof setInterval> | null = null;
@@ -67,7 +69,7 @@ export class TradingBot {
         }, 5000);
 
         // Wire up WebSocket callbacks
-        this.wsFeed.onTrade = async (price: number, qty: number, isBuyerMaker: boolean) => {
+        this.wsFeed.onTrade = (price: number, qty: number, isBuyerMaker: boolean) => {
             this.latestPrice = price;
 
             // Throttle strategy execution to avoid overwhelming
@@ -76,7 +78,8 @@ export class TradingBot {
             this.lastStrategyRunMs = now;
 
             // Run strategies with latest data
-            await this.runStrategies(price);
+            this.pendingStrategyPrice = price;
+            void this.flushStrategyQueue();
         };
 
         this.wsFeed.onDepth = (bids: [number, number][], asks: [number, number][]) => {
@@ -114,19 +117,38 @@ export class TradingBot {
     }
 
     private async runStrategies(price: number) {
-        try {
-            const ctx: TickContext = {
-                balanceBTC: this.balanceBTC,
-                balanceQuote: this.balanceQuote,
-                bids: this.latestBids,
-                asks: this.latestAsks,
-            };
+        const ctx: TickContext = {
+            balanceBTC: this.balanceBTC,
+            balanceQuote: this.balanceQuote,
+            bids: this.latestBids,
+            asks: this.latestAsks,
+        };
 
-            for (const strategy of this.strategies) {
+        for (const strategy of this.strategies) {
+            try {
                 await strategy.onTick(price, this.exchange, this.symbol, ctx);
+            } catch (error: any) {
+                Logger.error(`Strategy ${strategy.constructor.name} tick failed`, error?.message || error);
             }
-        } catch (error: any) {
-            Logger.error("Strategy tick failed", error.message);
+        }
+    }
+
+    private async flushStrategyQueue() {
+        if (this.strategyRunInFlight) return;
+
+        this.strategyRunInFlight = true;
+        try {
+            while (this.pendingStrategyPrice !== null && this.isRunning) {
+                const price = this.pendingStrategyPrice;
+                this.pendingStrategyPrice = null;
+                await this.runStrategies(price);
+            }
+        } finally {
+            this.strategyRunInFlight = false;
+
+            if (this.pendingStrategyPrice !== null && this.isRunning) {
+                void this.flushStrategyQueue();
+            }
         }
     }
 }

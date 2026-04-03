@@ -40,10 +40,11 @@ export class HyperScalpingStrategy implements ITradingStrategy {
                 this.buyPrice = price;
                 this.actualQuantity = result.actualQuantity; // Use real quantity after fees
                 this.latestState = `Position longue à $${this.buyPrice.toFixed(2)} (qty: ${this.actualQuantity})`;
-                Tracker.addTrade('BUY', price, this.tradeQuantity);
+                Tracker.addTrade('BUY', price, this.actualQuantity);
                 Logger.info(`[HyperScalping] Quantité réelle reçue après commission: ${this.actualQuantity}`);
             } catch (e) {
                 Logger.error("Échec de l'achat Scalping");
+                this.cooldownTicks = 2;
             }
         }
         else {
@@ -53,11 +54,18 @@ export class HyperScalpingStrategy implements ITradingStrategy {
             if (price >= targetProfit) {
                 Logger.success(`🚀 [HyperScalping] Take-Profit (+)! Vente flash à ${price}.`);
                 try {
-                    await exchange.placeMarketSell(symbol, this.actualQuantity);
+                    const sellQuantity = this.actualQuantity;
+                    if (sellQuantity <= 0) {
+                        this.positionOpen = false;
+                        this.latestState = "Position invalide reinitialisee.";
+                        return;
+                    }
+                    await exchange.placeMarketSell(symbol, sellQuantity);
                     this.positionOpen = false;
+                    this.actualQuantity = 0;
                     this.cooldownTicks = 3;
                     this.latestState = "Profit réussi. Repos.";
-                    Tracker.addTrade('SELL', price, this.actualQuantity);
+                    Tracker.addTrade('SELL', price, sellQuantity);
                 } catch (e) {
                     Logger.error("Échec de la vente Scalping");
                 }
@@ -65,11 +73,18 @@ export class HyperScalpingStrategy implements ITradingStrategy {
             else if (price <= stopLoss) {
                 Logger.warn(`🛑 [HyperScalping] Stop-Loss (-). Vente perte à ${price}.`);
                 try {
-                    await exchange.placeMarketSell(symbol, this.actualQuantity);
+                    const sellQuantity = this.actualQuantity;
+                    if (sellQuantity <= 0) {
+                        this.positionOpen = false;
+                        this.latestState = "Position invalide reinitialisee.";
+                        return;
+                    }
+                    await exchange.placeMarketSell(symbol, sellQuantity);
                     this.positionOpen = false;
+                    this.actualQuantity = 0;
                     this.cooldownTicks = 5;
                     this.latestState = "Pertes protégées. Repos.";
-                    Tracker.addTrade('SELL', price, this.actualQuantity);
+                    Tracker.addTrade('SELL', price, sellQuantity);
                 } catch (e) {
                     Logger.error("Échec de la vente Scalping");
                 }

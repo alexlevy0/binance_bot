@@ -23,6 +23,25 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
     private positionOpen: boolean = false;
     private buyPrice: number = 0;
     private actualQuantity: number = 0;
+    private untrackedWalletPositionSeen: boolean = false;
+    private exchangeMinNotional: number = 0;
+    private exchangeMinQty: number = 0;
+    private exchangeStepSize: number = 0;
+    private exchangeRulesLoadedSymbol: string | null = null;
+    private exitBlockedByNotional: boolean = false;
+    private entrySafetyMultiplier: number = 1.05;
+    private exitSafetyMultiplier: number = 1.01;
+    private currentTrailingPct: number = 0.0004;
+    private breakEvenArmed: boolean = false;
+    private breakEvenTriggerPrice: number = 0;
+    private breakEvenPrice: number = 0;
+    private tradeConviction: number = 0;
+    private tpExtensionsUsed: number = 0;
+    private maxTpExtensions: number = 1;
+    private maxPositionNotional: number = 35;
+    private baseRiskAllocation: number = 0.45;
+    private scoreRiskBonus: number = 0.35;
+    private lossPenaltyPerStreak: number = 0.08;
 
     // ── Dual EMA State ──
     private emaFast: number = 0;       // Fast EMA (5 ticks)
@@ -70,6 +89,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
     public latestOBI: number = 0;
     public latestSpread: number = 0;
     public latestEMA: number = 0;
+    public latestConviction: number = 0;
 
     // ── Config ──
     private maxSpreadPct: number;
@@ -83,8 +103,8 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         maxSpreadPct: number = 0.05,
         obiThreshold: number = 0.58,
         obiExitThreshold: number = 0.38,
-        tpMultiplier: number = 2.5,
-        slMultiplier: number = 4.0,
+        tpMultiplier: number = 4.2,
+        slMultiplier: number = 2.2,
         minNotional: number = 6.0
     ) {
         this.maxSpreadPct = maxSpreadPct;
@@ -174,11 +194,154 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         return velocity;
     }
 
+    private floorQuantity(quantity: number): number {
+        if (this.exchangeStepSize > 0) {
+            const precision = this.getQuantityPrecision(this.exchangeStepSize);
+            const floored = Math.floor((quantity + Number.EPSILON) / this.exchangeStepSize) * this.exchangeStepSize;
+            return Number(floored.toFixed(precision));
+        }
+        return Math.floor(quantity * 100000) / 100000;
+    }
+
+    private getEffectiveMinNotional(): number {
+        return Math.max(this.minNotional, this.exchangeMinNotional);
+    }
+
+    private getEffectiveMinQty(): number {
+        return this.exchangeMinQty;
+    }
+
+    private getQuantityPrecision(stepSize: number): number {
+        const step = stepSize.toString();
+        const decimals = step.includes('.') ? step.split('.')[1]!.length : 0;
+        return Math.min(decimals, 8);
+    }
+
+    private resetPositionState() {
+        this.positionOpen = false;
+        this.buyPrice = 0;
+        this.actualQuantity = 0;
+        this.takeProfitPrice = 0;
+        this.stopLossPrice = 0;
+        this.trailingStopPrice = 0;
+        this.highestPriceSinceEntry = 0;
+        this.exitBlockedByNotional = false;
+        this.currentTrailingPct = this.trailingStopPct;
+        this.breakEvenArmed = false;
+        this.breakEvenTriggerPrice = 0;
+        this.breakEvenPrice = 0;
+        this.tradeConviction = 0;
+        this.latestConviction = 0;
+        this.tpExtensionsUsed = 0;
+    }
+
+    private async ensureExchangeRules(exchange: Exchange, symbol: string) {
+        if (this.exchangeRulesLoadedSymbol === symbol) {
+            return;
+        }
+
+        try {
+            const rules = await exchange.getSymbolTradingRules(symbol);
+            if (rules.minNotional > 0) {
+                this.exchangeMinNotional = rules.minNotional;
+            }
+            if (rules.minQty > 0) {
+                this.exchangeMinQty = rules.minQty;
+            }
+            if (rules.stepSize > 0) {
+                this.exchangeStepSize = rules.stepSize;
+            }
+            this.exchangeRulesLoadedSymbol = symbol;
+        } catch (error) {
+            if (this.exchangeRulesLoadedSymbol !== symbol) {
+                Logger.warn(`[OrderBook] Impossible de charger les filtres Binance pour ${symbol}, fallback local a $${this.minNotional.toFixed(2)}`);
+                this.exchangeRulesLoadedSymbol = symbol;
+            }
+        }
+    }
+
+    private blockExitBecauseExchangeFilters(price: number, sellQty: number, reason: string) {
+        const sellNotional = sellQty * price;
+        const minExitNotional = this.getEffectiveMinNotional() * this.exitSafetyMultiplier;
+        const effectiveMinQty = this.getEffectiveMinQty();
+        if (!this.exitBlockedByNotional) {
+            const qtyHint = effectiveMinQty > 0 && sellQty < effectiveMinQty
+                ? ` ou qty ${sellQty} < ${effectiveMinQty}`
+                : '';
+            Logger.warn(`[Pro] ${reason} ignore: notional ${sellNotional.toFixed(2)} < ${minExitNotional.toFixed(2)}${qtyHint} pour sortir`);
+            this.exitBlockedByNotional = true;
+        }
+        this.latestState = `⚠️ Sortie bloquee (${sellNotional.toFixed(2)} < ${minExitNotional.toFixed(2)})`;
+    }
+
+    private restoreTrackedPosition(price: number, walletQuantity: number): boolean {
+        const trackedPosition = Tracker.getOpenPosition();
+        const walletQty = this.floorQuantity(walletQuantity);
+        const walletValue = walletQty * price;
+        const effectiveMinNotional = this.getEffectiveMinNotional();
+
+        if (walletValue < effectiveMinNotional) {
+            return false;
+        }
+
+        if (!trackedPosition) {
+            if (!this.untrackedWalletPositionSeen) {
+                Logger.warn(`[OrderBook] BTC detecte sans position suivie dans le tracker: ${walletQty} BTC`);
+                this.untrackedWalletPositionSeen = true;
+            }
+            this.latestState = `⚠️ BTC detecte (${walletQty}) sans entree suivie`;
+            return true;
+        }
+
+        const trackedQty = this.floorQuantity(trackedPosition.quantity);
+        const restoredQty = walletQty > 0 ? Math.min(walletQty, trackedQty) : trackedQty;
+        if (restoredQty <= 0 || (this.getEffectiveMinQty() > 0 && restoredQty < this.getEffectiveMinQty())) {
+            return false;
+        }
+
+        this.positionOpen = true;
+        this.buyPrice = trackedPosition.entryPrice;
+        this.actualQuantity = restoredQty;
+        this.highestPriceSinceEntry = Math.max(price, this.buyPrice);
+        this.currentTrailingPct = Math.max(this.trailingStopPct, 0.00045);
+        this.trailingStopPrice = this.highestPriceSinceEntry * (1 - this.currentTrailingPct);
+        this.takeProfitPrice = this.buyPrice * 1.0009;
+        this.stopLossPrice = Math.max(this.buyPrice * 0.9994, this.trailingStopPrice);
+        this.breakEvenTriggerPrice = this.buyPrice * 1.00035;
+        this.breakEvenPrice = this.buyPrice * 1.00008;
+        this.tradeConviction = 0.5;
+        this.latestConviction = this.tradeConviction;
+        this.untrackedWalletPositionSeen = false;
+
+        if (restoredQty !== trackedQty) {
+            Tracker.setOpenPosition({ entryPrice: this.buyPrice, quantity: restoredQty });
+        }
+
+        Logger.info(`[OrderBook] Position restauree: ${this.actualQuantity} BTC @ $${this.buyPrice.toFixed(2)}`);
+        this.latestState = `📈 Position restauree @ $${this.buyPrice.toFixed(2)}`;
+        return true;
+    }
+
+    private getSellQuantity(walletQuantity: number): number {
+        const walletQty = this.floorQuantity(walletQuantity);
+        const trackedQty = this.floorQuantity(this.actualQuantity);
+
+        if (trackedQty > 0 && walletQty === 0) {
+            return trackedQty;
+        }
+        if (trackedQty > 0 && walletQty > 0) {
+            return Math.min(trackedQty, walletQty);
+        }
+        return walletQty;
+    }
+
     async onTick(price: number, exchange: Exchange, symbol: string, ctx: TickContext): Promise<void> {
         // ── Update all indicators ──
         this.updateEMA(price);
         const atrPct = this.updateATR(price);
         const tickVelocity = this.getTickVelocity(price);
+
+        await this.ensureExchangeRules(exchange, symbol);
 
         // Cooldown
         if (this.cooldownTicks > 0) {
@@ -187,19 +350,14 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             return;
         }
 
-        // ── Detect existing BTC position on boot ──
+        if (!this.positionOpen && ctx.balanceBTC <= 0 && Tracker.getOpenPosition()) {
+            Logger.warn("[OrderBook] Position tracker nettoyee car aucun BTC n'est disponible dans le wallet");
+            Tracker.setOpenPosition(null);
+        }
+
+        // ── Restore a tracked position on boot ──
         if (!this.positionOpen && ctx.balanceBTC > 0) {
-            const btcValue = ctx.balanceBTC * price;
-            if (btcValue >= this.minNotional) {
-                this.positionOpen = true;
-                this.buyPrice = price;
-                this.actualQuantity = Math.floor(ctx.balanceBTC * 100000) / 100000;
-                this.highestPriceSinceEntry = price;
-                this.takeProfitPrice = price * 1.0003;
-                this.stopLossPrice = price * 0.9995;
-                this.trailingStopPrice = price * (1 - this.trailingStopPct);
-                Logger.info(`[OrderBook] Position BTC existante: ${this.actualQuantity} BTC (~$${btcValue.toFixed(2)})`);
-                this.latestState = `📈 Position récupérée @ $${price.toFixed(2)}`;
+            if (this.restoreTrackedPosition(price, ctx.balanceBTC)) {
                 return;
             }
         }
@@ -215,14 +373,24 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         // ── Compute Indicators ──
         const totalBidVol = bids.reduce((sum, [, qty]) => sum + qty, 0);
         const totalAskVol = asks.reduce((sum, [, qty]) => sum + qty, 0);
-        const obi = totalBidVol / (totalBidVol + totalAskVol);
+        const obi = totalBidVol / Math.max(totalBidVol + totalAskVol, Number.EPSILON);
         this.latestOBI = obi;
+        const topBidVol = bids.slice(0, 5).reduce((sum, [, qty]) => sum + qty, 0);
+        const topAskVol = asks.slice(0, 5).reduce((sum, [, qty]) => sum + qty, 0);
+        const topObi = topBidVol / Math.max(topBidVol + topAskVol, Number.EPSILON);
 
         const bestBid = bids[0]![0];
+        const bestBidQty = bids[0]![1];
         const bestAsk = asks[0]![0];
+        const bestAskQty = asks[0]![1];
         const spreadAbs = bestAsk - bestBid;
         const spreadPct = (spreadAbs / price) * 100;
         this.latestSpread = spreadPct;
+        const midPrice = (bestBid + bestAsk) / 2;
+        const microPrice = (bestAsk * bestBidQty + bestBid * bestAskQty) / Math.max(bestBidQty + bestAskQty, Number.EPSILON);
+        const microPriceEdgePct = ((microPrice - midPrice) / midPrice) * 100;
+        const depthRatio = bestBidQty / Math.max(bestAskQty, Number.EPSILON);
+        const emaGapPct = ((this.emaFast - this.emaSlow) / price) * 100;
 
         const vwap = this.calculateVWAP(bids, asks);
         const absorption = this.detectAbsorption(bids, asks);
@@ -231,9 +399,11 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         // ──────────── ENTRY LOGIC ────────────
         // ══════════════════════════════════════════════════
         if (!this.positionOpen) {
+            const effectiveMinNotional = this.getEffectiveMinNotional();
+
             // Balance check
-            if (ctx.balanceQuote < this.minNotional) {
-                this.latestState = `💤 USDC: $${ctx.balanceQuote.toFixed(2)} < $${this.minNotional}`;
+            if (ctx.balanceQuote < effectiveMinNotional) {
+                this.latestState = `💤 USDC: $${ctx.balanceQuote.toFixed(2)} < $${effectiveMinNotional.toFixed(2)}`;
                 return;
             }
 
@@ -246,14 +416,22 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             // ── Filter 3: OBI ──
             const obiOk = obi > this.obiThreshold;
 
-            // ── Filter 4: Spread ──
+            // ── Filter 4: Top-of-book OBI ──
+            const topObiOk = topObi > 0.56;
+
+            // ── Filter 5: Spread ──
             const spreadOk = spreadPct < this.maxSpreadPct;
 
-            // ── Filter 5: Dual EMA Crossover ──
+            // ── Filter 6: Dual EMA Crossover ──
             const emaCrossOk = this.emaFast > this.emaSlow;
+            const trendStrengthOk = emaGapPct > Math.max(spreadPct * 0.35, 0.0025);
 
-            // ── Filter 6: VWAP ──
+            // ── Filter 7: VWAP ──
             const vwapOk = price <= vwap * 1.0001; // Buy at or below VWAP (discount)
+
+            // ── Filter 8: Microprice & best-bid dominance ──
+            const microPriceOk = microPriceEdgePct > 0;
+            const depthRatioOk = depthRatio > 1.08;
 
             // ── Bonus: Absorption signal ──
             const absorptionBoost = absorption.bullish; // Ask wall eating = strong buy
@@ -263,46 +441,81 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             const scoreReasons: string[] = [];
 
             if (obiOk) { score += 2; } else { scoreReasons.push(`OBI:${(obi * 100).toFixed(0)}%`); }
+            if (topObiOk) { score += 2; } else { scoreReasons.push(`TopOBI:${(topObi * 100).toFixed(0)}%`); }
             if (spreadOk) { score += 1; } else { scoreReasons.push(`Sprd:${spreadPct.toFixed(3)}%`); }
-            if (emaCrossOk) { score += 2; } else { scoreReasons.push('EMA↓'); }
+            if (emaCrossOk) { score += 1; } else { scoreReasons.push('EMA↓'); }
+            if (trendStrengthOk) { score += 1; } else { scoreReasons.push(`Trend:${emaGapPct.toFixed(3)}%`); }
             if (vwapOk) { score += 1; } else { scoreReasons.push('VWAP↑'); }
+            if (microPriceOk) { score += 1; } else { scoreReasons.push(`Micro:${microPriceEdgePct.toFixed(4)}%`); }
+            if (depthRatioOk) { score += 1; } else { scoreReasons.push(`Depth:${depthRatio.toFixed(2)}`); }
             if (atrOk) { score += 1; } else { scoreReasons.push('Chop'); }
             if (velocityOk) { score += 1; } else { scoreReasons.push('Spike'); }
             if (absorptionBoost) { score += 2; scoreReasons.push('🔥Absorb!'); }
 
-            const minScore = 6; // Need at least 6/10 points
+            const minScore = 8;
+            const maxScore = 13;
 
             if (score < minScore) {
                 this.latestState = `🔍 Score: ${score}/${minScore} | ${scoreReasons.join(' ')}`;
                 return;
             }
 
+            const conviction = Math.min(Math.max((score - minScore) / Math.max(maxScore - minScore, 1), 0), 1);
+            this.tradeConviction = conviction;
+            this.latestConviction = conviction;
+
             // ── Position Sizing ──
-            const quoteToSpend = Math.min(ctx.balanceQuote * 0.80, 10);
+            const minEntryNotional = effectiveMinNotional * this.entrySafetyMultiplier;
+            const lossPenalty = Math.min(this.consecutiveLosses * this.lossPenaltyPerStreak, 0.20);
+            const allocation = Math.min(Math.max(this.baseRiskAllocation + conviction * this.scoreRiskBonus - lossPenalty, 0.30), 0.90);
+            const dynamicCap = Math.max(minEntryNotional, this.maxPositionNotional * (0.65 + conviction * 0.35));
+            const allocationQuote = ctx.balanceQuote * allocation;
+            const quoteToSpend = Math.min(ctx.balanceQuote, Math.max(minEntryNotional, Math.min(allocationQuote, dynamicCap)));
             let qty = quoteToSpend / price;
-            qty = Math.floor(qty * 100000) / 100000;
+            qty = this.floorQuantity(qty);
+            const entryNotional = qty * price;
+            const effectiveMinQty = this.getEffectiveMinQty();
 
             if (qty <= 0) {
                 this.latestState = "⚠️ Qty trop faible";
                 return;
             }
 
-            // ── Dynamic TP/SL scaled by ATR ──
-            const effectiveSpread = Math.max(spreadAbs, 1.0);
-            const atrScale = Math.max(atrPct / 0.01, 0.5); // Scale TP/SL by volatility
-            this.takeProfitPrice = price + (effectiveSpread * this.tpMultiplier * atrScale);
-            this.stopLossPrice = price - (effectiveSpread * this.slMultiplier * atrScale);
-            this.trailingStopPrice = price * (1 - this.trailingStopPct);
-            this.highestPriceSinceEntry = price;
+            if (effectiveMinQty > 0 && qty < effectiveMinQty) {
+                this.latestState = `⚠️ Qty ${qty} < minQty ${effectiveMinQty}`;
+                return;
+            }
 
-            Logger.success(`📊 [Pro] ENTRY! Score:${score} OBI:${(obi * 100).toFixed(0)}% EMA:${this.emaFast.toFixed(0)}/${this.emaSlow.toFixed(0)} VWAP:${vwap.toFixed(0)} ATR:${atrPct.toFixed(4)}%`);
-            Logger.info(`[Pro] TP:$${this.takeProfitPrice.toFixed(2)} SL:$${this.stopLossPrice.toFixed(2)} Trail:$${this.trailingStopPrice.toFixed(2)} Qty:${qty}`);
+            if (entryNotional < minEntryNotional) {
+                this.latestState = `💤 Notional reel trop faible: $${entryNotional.toFixed(2)} < $${minEntryNotional.toFixed(2)}`;
+                return;
+            }
+
+            // ── Dynamic TP/SL scaled by volatility and conviction ──
+            const atrAbs = price * (atrPct / 100);
+            const volatilityUnit = Math.max(spreadAbs * 2, atrAbs * 0.8, price * 0.00012);
+            const tpDistance = volatilityUnit * this.tpMultiplier * (1 + conviction * 0.30);
+            const slDistance = volatilityUnit * this.slMultiplier * Math.max(0.85, 1 - conviction * 0.12);
+            this.takeProfitPrice = price + tpDistance;
+            this.stopLossPrice = price - slDistance;
+            this.currentTrailingPct = Math.min(Math.max((atrPct / 100) * (1.1 + conviction * 0.4), 0.00035), 0.0012);
+            this.trailingStopPrice = price * (1 - this.currentTrailingPct);
+            this.highestPriceSinceEntry = price;
+            this.breakEvenArmed = false;
+            this.breakEvenTriggerPrice = price + tpDistance * 0.45;
+            this.breakEvenPrice = price + Math.max(spreadAbs * 0.5, price * 0.00006);
+            this.tpExtensionsUsed = 0;
+
+            Logger.success(`📊 [Pro] ENTRY! Score:${score} Conv:${(conviction * 100).toFixed(0)}% OBI:${(obi * 100).toFixed(0)}% Top:${(topObi * 100).toFixed(0)}% EMA:${this.emaFast.toFixed(0)}/${this.emaSlow.toFixed(0)} ATR:${atrPct.toFixed(4)}%`);
+            Logger.info(`[Pro] TP:$${this.takeProfitPrice.toFixed(2)} SL:$${this.stopLossPrice.toFixed(2)} Trail:${(this.currentTrailingPct * 100).toFixed(3)}% Qty:${qty}`);
 
             try {
                 const result = await exchange.placeMarketBuy(symbol, qty);
                 this.positionOpen = true;
                 this.buyPrice = price;
                 this.actualQuantity = result.actualQuantity;
+                this.untrackedWalletPositionSeen = false;
+                this.exitBlockedByNotional = false;
                 this.latestState = `📈 Long @ $${price.toFixed(2)} | Score:${score}`;
                 Tracker.addTrade('BUY', price, this.actualQuantity);
             } catch (e) {
@@ -315,10 +528,15 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             // ──────────── EXIT LOGIC ────────────
             // ══════════════════════════════════════════════════
 
+            if (!this.breakEvenArmed && price >= this.breakEvenTriggerPrice) {
+                this.breakEvenArmed = true;
+                this.stopLossPrice = Math.max(this.stopLossPrice, this.breakEvenPrice);
+            }
+
             // ── Update Trailing Stop ──
             if (price > this.highestPriceSinceEntry) {
                 this.highestPriceSinceEntry = price;
-                const newTrailing = price * (1 - this.trailingStopPct);
+                const newTrailing = price * (1 - this.currentTrailingPct);
                 if (newTrailing > this.trailingStopPrice) {
                     this.trailingStopPrice = newTrailing;
                 }
@@ -328,15 +546,50 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
                 }
             }
 
-            // Use real wallet balance for sells (commission-safe)
-            const sellQty = Math.floor(ctx.balanceBTC * 100000) / 100000;
+            const sellQty = this.getSellQuantity(ctx.balanceBTC);
+            const minExitNotional = this.getEffectiveMinNotional() * this.exitSafetyMultiplier;
+            const effectiveMinQty = this.getEffectiveMinQty();
+            const canSendSellOrder = sellQty * price >= minExitNotional && (effectiveMinQty <= 0 || sellQty >= effectiveMinQty);
+            if (sellQty <= 0) {
+                Logger.warn("[Pro] Quantite vendable nulle, reset de l'etat local");
+                this.resetPositionState();
+                Tracker.setOpenPosition(null);
+                this.latestState = "⚠️ Position introuvable, etat reinitialise";
+                return;
+            }
+            if (canSendSellOrder) {
+                this.exitBlockedByNotional = false;
+            }
+
+            const strongTrendContinuation =
+                this.tpExtensionsUsed < this.maxTpExtensions &&
+                price >= this.takeProfitPrice &&
+                obi > Math.max(this.obiThreshold + 0.05, 0.64) &&
+                topObi > 0.60 &&
+                this.emaFast > this.emaSlow &&
+                microPriceEdgePct > 0 &&
+                tickVelocity < this.maxTickVelocityPct * 0.8;
+
+            if (strongTrendContinuation) {
+                const extensionDistance = Math.max((this.takeProfitPrice - this.buyPrice) * (0.30 + this.tradeConviction * 0.20), price * 0.00025);
+                this.takeProfitPrice = price + extensionDistance;
+                this.currentTrailingPct = Math.max(0.00025, this.currentTrailingPct * 0.75);
+                this.tpExtensionsUsed++;
+                this.latestState = `🚀 Winner extend | TP:$${this.takeProfitPrice.toFixed(2)}`;
+                Logger.info(`[Pro] TP extension activee: nouveau TP $${this.takeProfitPrice.toFixed(2)} | Trail ${(this.currentTrailingPct * 100).toFixed(3)}%`);
+                return;
+            }
 
             // 1. Take-Profit
             if (price >= this.takeProfitPrice) {
+                if (!canSendSellOrder) {
+                    this.blockExitBecauseExchangeFilters(price, sellQty, "Take-profit");
+                    return;
+                }
                 Logger.success(`🚀 [Pro] Take-Profit! $${price.toFixed(2)} ≥ $${this.takeProfitPrice.toFixed(2)}`);
                 try {
                     await exchange.placeMarketSell(symbol, sellQty);
-                    this.positionOpen = false;
+                    this.resetPositionState();
                     this.cooldownTicks = 3;
                     this.consecutiveLosses = 0;
                     this.latestState = "✅ Profit encaissé!";
@@ -348,6 +601,10 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             // 2. Trailing Stop / Stop-Loss
             if (price <= this.stopLossPrice) {
                 const wasProfit = price > this.buyPrice;
+                if (!canSendSellOrder) {
+                    this.blockExitBecauseExchangeFilters(price, sellQty, wasProfit ? "Trailing stop" : "Stop-loss");
+                    return;
+                }
                 if (wasProfit) {
                     Logger.success(`📈 [Pro] Trailing Stop (profit lock)! $${price.toFixed(2)}`);
                 } else {
@@ -356,7 +613,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
                 }
                 try {
                     await exchange.placeMarketSell(symbol, sellQty);
-                    this.positionOpen = false;
+                    this.resetPositionState();
                     // Longer cooldown after loss streak
                     this.cooldownTicks = this.consecutiveLosses >= this.maxConsecutiveLosses ? 15 : 5;
                     this.latestState = wasProfit ? "📈 Trailing profit!" : `🛡️ SL (streak: ${this.consecutiveLosses})`;
@@ -366,13 +623,17 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             }
 
             // 3. OBI Reversal Exit
-            if (obi < this.obiExitThreshold) {
+            if (obi < this.obiExitThreshold && this.emaFast <= this.emaSlow) {
+                if (!canSendSellOrder) {
+                    this.blockExitBecauseExchangeFilters(price, sellQty, "OBI reversal");
+                    return;
+                }
                 Logger.warn(`⚡ [Pro] OBI Reversal (${(obi * 100).toFixed(1)}%) @ $${price.toFixed(2)}`);
                 try {
-                    await exchange.placeMarketSell(symbol, sellQty);
-                    this.positionOpen = false;
-                    this.cooldownTicks = 4;
                     const wasProfit = price > this.buyPrice;
+                    await exchange.placeMarketSell(symbol, sellQty);
+                    this.resetPositionState();
+                    this.cooldownTicks = 4;
                     if (!wasProfit) this.consecutiveLosses++;
                     else this.consecutiveLosses = 0;
                     this.latestState = "⚡ OBI Exit";
@@ -383,10 +644,14 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
 
             // 4. Bearish Absorption while holding → early exit
             if (absorption.bearish && price < this.buyPrice) {
+                if (!canSendSellOrder) {
+                    this.blockExitBecauseExchangeFilters(price, sellQty, "Emergency exit");
+                    return;
+                }
                 Logger.warn(`🔥 [Pro] Bid Wall absorbed! Emergency exit @ $${price.toFixed(2)}`);
                 try {
                     await exchange.placeMarketSell(symbol, sellQty);
-                    this.positionOpen = false;
+                    this.resetPositionState();
                     this.cooldownTicks = 5;
                     this.consecutiveLosses++;
                     this.latestState = "🔥 Absorption Exit";
@@ -397,7 +662,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
 
             // ── Still holding ──
             const pnl = ((price - this.buyPrice) / this.buyPrice * 100).toFixed(3);
-            this.latestState = `📈 $${this.buyPrice.toFixed(0)} | PnL:${pnl}% | Trail:$${this.trailingStopPrice.toFixed(0)} | OBI:${(obi * 100).toFixed(0)}%`;
+            this.latestState = `📈 $${this.buyPrice.toFixed(0)} | PnL:${pnl}% | TP:$${this.takeProfitPrice.toFixed(0)} | SL:$${this.stopLossPrice.toFixed(0)} | OBI:${(obi * 100).toFixed(0)}%`;
         }
     }
 }

@@ -10,6 +10,9 @@ export const config = {
 };
 
 if (!config.apiKey || !config.secretKey) {
-    console.error("❌ API_KEY_DEMO and SECRET_KEY_DEMO must be defined in the .env file.");
+    const requiredKeys = config.isLive
+        ? "API_KEY and SECRET_KEY"
+        : "API_KEY_DEMO and SECRET_KEY_DEMO";
+    console.error(`❌ ${requiredKeys} must be defined in the .env file.`);
     process.exit(1);
 }

@@ -1,8 +1,22 @@
 import { Spot } from '@binance/connector';
 import { Logger } from '../utils/logger';
 
+export interface SymbolTradingRules {
+    minNotional: number;
+    minQty: number;
+    stepSize: number;
+}
+
+export interface ExchangeErrorDetails {
+    status: number | null;
+    code: string | number | null;
+    message: string;
+    isAuthError: boolean;
+}
+
 export class Exchange {
     private client: typeof Spot;
+    private symbolRulesCache = new Map<string, SymbolTradingRules>();
 
     constructor(apiKey: string, secretKey: string, baseURL: string) {
         this.client = new Spot(apiKey, secretKey, { baseURL });
@@ -67,6 +81,41 @@ export class Exchange {
         }
     }
 
+    async getSymbolTradingRules(symbol: string): Promise<SymbolTradingRules> {
+        const cacheKey = symbol.toUpperCase();
+        const cached = this.symbolRulesCache.get(cacheKey);
+        if (cached) {
+            return cached;
+        }
+
+        try {
+            const response = await this.client.exchangeInfo({ symbol: cacheKey });
+            const symbolInfo = response.data?.symbols?.[0];
+            if (!symbolInfo) {
+                throw new Error(`No exchangeInfo found for ${cacheKey}`);
+            }
+
+            const filters = symbolInfo.filters || [];
+            const notionalFilter = filters.find((filter: any) =>
+                filter.filterType === 'NOTIONAL' || filter.filterType === 'MIN_NOTIONAL'
+            );
+            const lotSizeFilter = filters.find((filter: any) => filter.filterType === 'LOT_SIZE');
+            const marketLotSizeFilter = filters.find((filter: any) => filter.filterType === 'MARKET_LOT_SIZE');
+
+            const rules: SymbolTradingRules = {
+                minNotional: parseFloat(notionalFilter?.minNotional || '0') || 0,
+                minQty: parseFloat(marketLotSizeFilter?.minQty || lotSizeFilter?.minQty || '0') || 0,
+                stepSize: parseFloat(marketLotSizeFilter?.stepSize || lotSizeFilter?.stepSize || '0') || 0,
+            };
+
+            this.symbolRulesCache.set(cacheKey, rules);
+            return rules;
+        } catch (error: any) {
+            Logger.error(`Failed to fetch trading rules for ${symbol}`, error?.response?.data || error.message);
+            throw error;
+        }
+    }
+
     async placeMarketBuy(symbol: string, quantity: number) {
         try {
             const response = await this.client.newOrder(symbol, 'BUY', 'MARKET', { quantity });
@@ -110,5 +159,18 @@ export class Exchange {
             Logger.error(`Order Book fetch failed for ${symbol}`, error?.response?.data || error.message);
             return { bids: [], asks: [] };
         }
+    }
+
+    public getErrorDetails(error: any): ExchangeErrorDetails {
+        const status = error?.response?.status ?? null;
+        const code = error?.response?.data?.code ?? error?.code ?? null;
+        const message = error?.response?.data?.msg
+            || error?.response?.statusText
+            || error?.message
+            || 'Unknown exchange error';
+        const authCodes = new Set([-2015, -2014, -2008, -1022]);
+        const isAuthError = status === 401 || (typeof code === 'number' && authCodes.has(code));
+
+        return { status, code, message, isAuthError };
     }
 }

@@ -5,12 +5,26 @@ import { TradingBot } from './src/bot';
 import { OrderBookScalpingStrategy } from './src/strategies/orderBookScalping';
 import { startDashboard } from './src/server';
 
+function getAuthTroubleshootingHint() {
+    if (config.isLive) {
+        return "Mode LIVE detecte. Verifie que API_KEY/SECRET_KEY correspondent a de vraies cles Binance Spot live, qu'elles ne sont pas des cles testnet, que l'acces API Spot est actif, et qu'aucune restriction IP ne bloque ta machine.";
+    }
+
+    return "Mode DEMO detecte. Verifie que API_KEY_DEMO/SECRET_KEY_DEMO viennent bien du testnet Binance Spot et que BASE_URL pointe vers le testnet.";
+}
+
 async function main() {
     Logger.info(`🚀 Initializing Scalable Binance Spot Trading Bot in ${config.isLive ? '🔴 LIVE' : '🟢 DEMO'} mode...`);
 
     const exchange = new Exchange(config.apiKey, config.secretKey, config.baseURL);
 
     try {
+        const isConnected = await exchange.ping();
+        if (!isConnected) {
+            Logger.error(`Cannot initialize bot, Binance API is unreachable at ${config.baseURL}`);
+            return;
+        }
+
         // Check initial Balances
         const balances = await exchange.getBalances();
         if (balances.length === 0) {
@@ -48,7 +62,18 @@ async function main() {
         });
 
     } catch (error: any) {
-        Logger.error("Fatal initialization error", error);
+        const details = exchange.getErrorDetails(error);
+
+        if (details.isAuthError) {
+            const suffix = details.code != null ? ` (status ${details.status ?? 'n/a'}, code ${details.code})` : ` (status ${details.status ?? 'n/a'})`;
+            Logger.error(`Binance authentication failed${suffix}`, details.message);
+            Logger.warn(getAuthTroubleshootingHint());
+            Logger.info(`Startup stopped before trading. Endpoint: ${config.baseURL}`);
+            return;
+        }
+
+        const suffix = details.code != null ? ` (status ${details.status ?? 'n/a'}, code ${details.code})` : ` (status ${details.status ?? 'n/a'})`;
+        Logger.error(`Fatal initialization error${suffix}`, details.message);
     }
 }
 

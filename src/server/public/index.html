@@ -299,6 +299,12 @@
                     lastTradeCount = trades.length;
 
                     const markers = [];
+                    // Remove old price lines
+                    if (window._tradeLines) {
+                        window._tradeLines.forEach(l => candleSeries.removePriceLine(l));
+                    }
+                    window._tradeLines = [];
+
                     trades.forEach(t => {
                         // Snap trade time to the exact candle time
                         let snappedTime = currentCandles[0].time;
@@ -307,11 +313,28 @@
                             else break;
                         }
                         markers.push({
-                            time: snappedTime, position: t.side === 'BUY' ? 'belowBar' : 'aboveBar',
-                            color: t.side === 'BUY' ? '#4ade80' : '#f87171', shape: t.side === 'BUY' ? 'arrowUp' : 'arrowDown',
-                            text: t.side + ' @ ' + t.price
+                            time: snappedTime, position: 'inBar',
+                            color: t.side === 'BUY' ? '#4ade80' : '#f87171',
+                            shape: t.side === 'BUY' ? 'arrowUp' : 'arrowDown',
+                            text: t.side + ' $' + parseFloat(t.price).toFixed(2)
                         });
+
+                        // Add a horizontal price line at the exact trade price
+                        const priceLine = candleSeries.createPriceLine({
+                            price: parseFloat(t.price),
+                            color: t.side === 'BUY' ? 'rgba(74, 222, 128, 0.5)' : 'rgba(248, 113, 113, 0.5)',
+                            lineWidth: 1,
+                            lineStyle: 2, // Dashed
+                            axisLabelVisible: true,
+                            title: t.side,
+                        });
+                        window._tradeLines.push(priceLine);
                     });
+
+                    // Only keep price lines for last 10 trades to avoid clutter
+                    while (window._tradeLines.length > 10) {
+                        candleSeries.removePriceLine(window._tradeLines.shift());
+                    }
 
                     // Set markers must be sorted inherently and grouped by time to avoid TV crashes
                     const uniqueMarkers = [];

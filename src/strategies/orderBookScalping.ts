@@ -328,16 +328,19 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
                 }
             }
 
+            // Use real wallet balance for sells (commission-safe)
+            const sellQty = Math.floor(ctx.balanceBTC * 100000) / 100000;
+
             // 1. Take-Profit
             if (price >= this.takeProfitPrice) {
                 Logger.success(`🚀 [Pro] Take-Profit! $${price.toFixed(2)} ≥ $${this.takeProfitPrice.toFixed(2)}`);
                 try {
-                    await exchange.placeMarketSell(symbol, this.actualQuantity);
+                    await exchange.placeMarketSell(symbol, sellQty);
                     this.positionOpen = false;
                     this.cooldownTicks = 3;
-                    this.consecutiveLosses = 0; // Reset loss streak
+                    this.consecutiveLosses = 0;
                     this.latestState = "✅ Profit encaissé!";
-                    Tracker.addTrade('SELL', price, this.actualQuantity);
+                    Tracker.addTrade('SELL', price, sellQty);
                 } catch (e) { Logger.error("Pro SELL (TP) échoué"); }
                 return;
             }
@@ -352,12 +355,12 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
                     this.consecutiveLosses++;
                 }
                 try {
-                    await exchange.placeMarketSell(symbol, this.actualQuantity);
+                    await exchange.placeMarketSell(symbol, sellQty);
                     this.positionOpen = false;
                     // Longer cooldown after loss streak
                     this.cooldownTicks = this.consecutiveLosses >= this.maxConsecutiveLosses ? 15 : 5;
-                    this.latestState = wasProfit ? "� Trailing profit!" : `�🛡️ SL (streak: ${this.consecutiveLosses})`;
-                    Tracker.addTrade('SELL', price, this.actualQuantity);
+                    this.latestState = wasProfit ? "📈 Trailing profit!" : `🛡️ SL (streak: ${this.consecutiveLosses})`;
+                    Tracker.addTrade('SELL', price, sellQty);
                 } catch (e) { Logger.error("Pro SELL (SL) échoué"); }
                 return;
             }
@@ -366,14 +369,14 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             if (obi < this.obiExitThreshold) {
                 Logger.warn(`⚡ [Pro] OBI Reversal (${(obi * 100).toFixed(1)}%) @ $${price.toFixed(2)}`);
                 try {
-                    await exchange.placeMarketSell(symbol, this.actualQuantity);
+                    await exchange.placeMarketSell(symbol, sellQty);
                     this.positionOpen = false;
                     this.cooldownTicks = 4;
                     const wasProfit = price > this.buyPrice;
                     if (!wasProfit) this.consecutiveLosses++;
                     else this.consecutiveLosses = 0;
                     this.latestState = "⚡ OBI Exit";
-                    Tracker.addTrade('SELL', price, this.actualQuantity);
+                    Tracker.addTrade('SELL', price, sellQty);
                 } catch (e) { Logger.error("Pro SELL (OBI) échoué"); }
                 return;
             }
@@ -382,12 +385,12 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             if (absorption.bearish && price < this.buyPrice) {
                 Logger.warn(`🔥 [Pro] Bid Wall absorbed! Emergency exit @ $${price.toFixed(2)}`);
                 try {
-                    await exchange.placeMarketSell(symbol, this.actualQuantity);
+                    await exchange.placeMarketSell(symbol, sellQty);
                     this.positionOpen = false;
                     this.cooldownTicks = 5;
                     this.consecutiveLosses++;
                     this.latestState = "🔥 Absorption Exit";
-                    Tracker.addTrade('SELL', price, this.actualQuantity);
+                    Tracker.addTrade('SELL', price, sellQty);
                 } catch (e) { Logger.error("Pro SELL (Absorb) échoué"); }
                 return;
             }

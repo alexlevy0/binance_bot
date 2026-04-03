@@ -2303,13 +2303,109 @@
       "side": "SELL",
       "price": 66915.64,
       "quantity": 0.00012
+    },
+    {
+      "time": 1775232652,
+      "side": "BUY",
+      "price": 66874.71,
+      "quantity": 0.00012
+    },
+    {
+      "time": 1775232688,
+      "side": "SELL",
+      "price": 66868.2,
+      "quantity": 0.00012
+    },
+    {
+      "time": 1775232709,
+      "side": "BUY",
+      "price": 66872.02,
+      "quantity": 0.00013
+    },
+    {
+      "time": 1775232791,
+      "side": "SELL",
+      "price": 66906,
+      "quantity": 0.00012
+    },
+    {
+      "time": 1775232812,
+      "side": "BUY",
+      "price": 66907.36,
+      "quantity": 0.00012
+    },
+    {
+      "time": 1775232903,
+      "side": "SELL",
+      "price": 66901.47,
+      "quantity": 0.00012
+    },
+    {
+      "time": 1775232910,
+      "side": "BUY",
+      "price": 66908.51,
+      "quantity": 0.00011
+    },
+    {
+      "time": 1775233030,
+      "side": "SELL",
+      "price": 66923.1,
+      "quantity": 0.00011
+    },
+    {
+      "time": 1775233038,
+      "side": "BUY",
+      "price": 66903.37,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775233044,
+      "side": "SELL",
+      "price": 66904.47,
+      "quantity": 0.00013
+    },
+    {
+      "time": 1775233053,
+      "side": "BUY",
+      "price": 66881.69,
+      "quantity": 0.0001
+    },
+    {
+      "time": 1775233072,
+      "side": "SELL",
+      "price": 66875.77,
+      "quantity": 0.0001
+    },
+    {
+      "time": 1775233084,
+      "side": "BUY",
+      "price": 66895.92,
+      "quantity": 0.00012
+    },
+    {
+      "time": 1775233293,
+      "side": "SELL",
+      "price": 66936.24,
+      "quantity": 0.00012
+    },
+    {
+      "time": 1775233300,
+      "side": "BUY",
+      "price": 66925.74,
+      "quantity": 0.00011
+    },
+    {
+      "time": 1775233403,
+      "side": "SELL",
+      "price": 66956.81,
+      "quantity": 0.00011
     }
   ],
-  "realizedPnl": 0.04410466712844191,
-  "totalWinningTrades": 125,
-  "totalLosingTrades": 58,
+  "realizedPnl": 0.05689136146533168,
+  "totalWinningTrades": 131,
+  "totalLosingTrades": 60,
   "openPosition": {
-    "entryPrice": 66908.35890428173,
-    "quantity": 0.000029999999999999848
+    "entryPrice": 66915.79522930688,
+    "quantity": 0.000049999999999999847
   }
 }

@@ -42,6 +42,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
     private baseRiskAllocation: number = 0.45;
     private scoreRiskBonus: number = 0.35;
     private lossPenaltyPerStreak: number = 0.08;
+    private dustIgnoreRatio: number = 0.35;
 
     // ── Dual EMA State ──
     private emaFast: number = 0;       // Fast EMA (5 ticks)
@@ -217,6 +218,32 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         return Math.min(decimals, 8);
     }
 
+    private getDustIgnoreNotional(): number {
+        return this.getEffectiveMinNotional() * this.dustIgnoreRatio;
+    }
+
+    private isDustQuantity(quantity: number, price: number): boolean {
+        if (quantity <= 0) return false;
+        return quantity * price < this.getDustIgnoreNotional();
+    }
+
+    private clearTrackedDustIfNeeded(price: number) {
+        const trackedPosition = Tracker.getOpenPosition();
+        if (!trackedPosition) return;
+
+        if (this.isDustQuantity(trackedPosition.quantity, price)) {
+            Tracker.setOpenPosition(null);
+        }
+    }
+
+    private ignoreDustPosition(reason: string, price: number, walletQuantity: number) {
+        const dustNotional = walletQuantity * price;
+        Logger.info(`[OrderBook] Dust ignoree (${reason}) ~ $${dustNotional.toFixed(2)}. Strategie rearmee.`);
+        this.resetPositionState();
+        this.clearTrackedDustIfNeeded(price);
+        this.latestState = `🧹 Dust ignoree ($${dustNotional.toFixed(2)})`;
+    }
+
     private resetPositionState() {
         this.positionOpen = false;
         this.buyPrice = 0;
@@ -295,7 +322,12 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
 
         const trackedQty = this.floorQuantity(trackedPosition.quantity);
         const restoredQty = walletQty > 0 ? Math.min(walletQty, trackedQty) : trackedQty;
-        if (restoredQty <= 0 || (this.getEffectiveMinQty() > 0 && restoredQty < this.getEffectiveMinQty())) {
+        const restoredNotional = restoredQty * price;
+        if (
+            restoredQty <= 0 ||
+            (this.getEffectiveMinQty() > 0 && restoredQty < this.getEffectiveMinQty()) ||
+            restoredNotional < this.getEffectiveMinNotional()
+        ) {
             return false;
         }
 
@@ -353,6 +385,10 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         if (!this.positionOpen && ctx.balanceBTC <= 0 && Tracker.getOpenPosition()) {
             Logger.warn("[OrderBook] Position tracker nettoyee car aucun BTC n'est disponible dans le wallet");
             Tracker.setOpenPosition(null);
+        }
+
+        if (!this.positionOpen && ctx.balanceBTC > 0 && this.isDustQuantity(ctx.balanceBTC, price)) {
+            this.clearTrackedDustIfNeeded(price);
         }
 
         // ── Restore a tracked position on boot ──
@@ -527,6 +563,11 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             // ══════════════════════════════════════════════════
             // ──────────── EXIT LOGIC ────────────
             // ══════════════════════════════════════════════════
+
+            if (ctx.balanceBTC > 0 && this.isDustQuantity(ctx.balanceBTC, price)) {
+                this.ignoreDustPosition("wallet sous le seuil de vente", price, ctx.balanceBTC);
+                return;
+            }
 
             if (!this.breakEvenArmed && price >= this.breakEvenTriggerPrice) {
                 this.breakEvenArmed = true;

@@ -14,6 +14,18 @@ export interface ExchangeErrorDetails {
     isAuthError: boolean;
 }
 
+export interface SpotSnapshotBalance {
+    asset: string;
+    free: number;
+    locked: number;
+}
+
+export interface SpotAccountSnapshot {
+    updateTime: number;
+    totalAssetOfBtc: number;
+    balances: SpotSnapshotBalance[];
+}
+
 export class Exchange {
     private client: typeof Spot;
     private symbolRulesCache = new Map<string, SymbolTradingRules>();
@@ -78,6 +90,49 @@ export class Exchange {
         } catch (error: any) {
             Logger.error(`Failed to fetch chart klines for ${symbol}`, error?.response?.data || error.message);
             return [];
+        }
+    }
+
+    async getHistoricalClosePrice(symbol: string, endTime: number, interval: string = '1m'): Promise<number> {
+        try {
+            const response = await this.client.klines(symbol, interval, { endTime, limit: 1 });
+            const candle = response.data?.[0];
+            if (!candle) {
+                throw new Error(`No historical candle found for ${symbol}`);
+            }
+            return parseFloat(candle[4]);
+        } catch (error: any) {
+            Logger.error(`Failed to fetch historical close for ${symbol}`, error?.response?.data || error.message);
+            throw error;
+        }
+    }
+
+    async getLatestSpotAccountSnapshot(): Promise<SpotAccountSnapshot | null> {
+        try {
+            const response = await this.client.accountSnapshot('SPOT', { limit: 5 });
+            const snapshots = response.data?.snapshotVos;
+            if (!Array.isArray(snapshots) || snapshots.length === 0) {
+                return null;
+            }
+
+            const latest = snapshots
+                .map((snapshot: any) => ({
+                    updateTime: Number(snapshot.updateTime || 0),
+                    totalAssetOfBtc: parseFloat(snapshot.data?.totalAssetOfBtc || '0') || 0,
+                    balances: Array.isArray(snapshot.data?.balances)
+                        ? snapshot.data.balances.map((balance: any) => ({
+                            asset: balance.asset,
+                            free: parseFloat(balance.free || '0') || 0,
+                            locked: parseFloat(balance.locked || '0') || 0,
+                        }))
+                        : [],
+                }))
+                .sort((left: SpotAccountSnapshot, right: SpotAccountSnapshot) => right.updateTime - left.updateTime)[0];
+
+            return latest || null;
+        } catch (error: any) {
+            Logger.warn(`Failed to fetch spot account snapshot (${error?.response?.data?.msg || error?.message || error})`);
+            return null;
         }
     }
 

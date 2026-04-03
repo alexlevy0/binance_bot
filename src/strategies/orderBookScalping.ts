@@ -3,6 +3,32 @@ import { Exchange } from "../core/exchange";
 import { Logger } from "../utils/logger";
 import { Tracker } from "../core/tracker";
 
+type MarketRegime = 'TREND' | 'BALANCED' | 'CHOP' | 'THIN' | 'HOSTILE' | 'HALTED';
+
+interface SmoothedBookState {
+    smoothedObi: number;
+    smoothedTopObi: number;
+    smoothedSpreadPct: number;
+    smoothedMicroPriceEdgePct: number;
+    smoothedDepthRatio: number;
+    smoothedBidConsumption: number;
+    smoothedAskConsumption: number;
+    smoothedAbsorptionBias: number;
+    smoothedNearDepthShare: number;
+    obiStdDev: number;
+    microStdDev: number;
+    obiSlope: number;
+    topObiSlope: number;
+}
+
+interface MarketRegimeAssessment {
+    regime: MarketRegime;
+    allowEntries: boolean;
+    riskMultiplier: number;
+    minScoreAdjustment: number;
+    note: string;
+}
+
 /**
  * OrderBookScalpingStrategy v2 — Pro Edition
  * 
@@ -38,11 +64,36 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
     private tradeConviction: number = 0;
     private tpExtensionsUsed: number = 0;
     private maxTpExtensions: number = 1;
-    private maxPositionNotional: number = 35;
-    private baseRiskAllocation: number = 0.45;
-    private scoreRiskBonus: number = 0.35;
-    private lossPenaltyPerStreak: number = 0.08;
+    private maxPositionNotional: number = 18;
+    private baseRiskAllocation: number = 0.18;
+    private scoreRiskBonus: number = 0.16;
+    private lossPenaltyPerStreak: number = 0.10;
     private dustIgnoreRatio: number = 0.35;
+    private buyBalanceSafetyFactor: number = 0.985;
+    private buyPriceSafetyMultiplier: number = 1.0015;
+    private minRiskAllocation: number = 0.12;
+    private maxRiskAllocation: number = 0.42;
+    private riskPauseTicks: number = 0;
+    private dailyLossLimitQuote: number = 1.5;
+    private dailyCautionLossQuote: number = 0.75;
+    private dailyRealizedPnl: number = 0;
+    private dailyTradeCount: number = 0;
+    private activeDayKey: string = '';
+    private marketRegime: MarketRegime = 'BALANCED';
+    private bookSignalWindow: number = 12;
+    private obiHistory: number[] = [];
+    private topObiHistory: number[] = [];
+    private spreadHistory: number[] = [];
+    private microPriceEdgeHistory: number[] = [];
+    private depthRatioHistory: number[] = [];
+    private nearDepthShareHistory: number[] = [];
+    private bidConsumptionHistory: number[] = [];
+    private askConsumptionHistory: number[] = [];
+    private absorptionBiasHistory: number[] = [];
+    private lastBestBidQty: number = 0;
+    private lastBestAskQty: number = 0;
+    private estimatedFeeRate: number = 0.001;
+    private estimatedSlippageRate: number = 0.00025;
 
     // ── Dual EMA State ──
     private emaFast: number = 0;       // Fast EMA (5 ticks)
@@ -91,6 +142,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
     public latestSpread: number = 0;
     public latestEMA: number = 0;
     public latestConviction: number = 0;
+    public latestRegime: string = "BALANCED";
 
     // ── Config ──
     private maxSpreadPct: number;
@@ -147,6 +199,222 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             totalRange += Math.abs(this.priceHistory[i]! - this.priceHistory[i - 1]!);
         }
         return (totalRange / (this.priceHistory.length - 1)) / price * 100; // ATR as %
+    }
+
+    private pushRollingValue(history: number[], value: number) {
+        history.push(value);
+        if (history.length > this.bookSignalWindow) {
+            history.shift();
+        }
+    }
+
+    private getAverage(values: number[]): number {
+        if (values.length === 0) return 0;
+        return values.reduce((sum, value) => sum + value, 0) / values.length;
+    }
+
+    private getSlope(values: number[]): number {
+        if (values.length < 2) return 0;
+        return (values[values.length - 1]! - values[0]!) / (values.length - 1);
+    }
+
+    private getStandardDeviation(values: number[]): number {
+        if (values.length < 2) return 0;
+        const mean = this.getAverage(values);
+        const variance = values.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) / values.length;
+        return Math.sqrt(variance);
+    }
+
+    private getLocalDayKey(): string {
+        return new Date().toLocaleDateString('en-CA');
+    }
+
+    private refreshDailyRiskState() {
+        const dayKey = this.getLocalDayKey();
+        if (this.activeDayKey === dayKey) {
+            return;
+        }
+
+        this.activeDayKey = dayKey;
+        this.dailyRealizedPnl = 0;
+        this.dailyTradeCount = 0;
+        this.riskPauseTicks = 0;
+        Logger.info(`[Risk] Nouvelle session journaliere ${dayKey}, compteurs reinitialises.`);
+    }
+
+    private estimateExecutionCosts(notional: number, conviction: number, exitPressure: number = 0): { feesQuote: number, slippageQuote: number } {
+        const safeNotional = Math.max(notional, 0);
+        const feesQuote = safeNotional * this.estimatedFeeRate;
+        const convictionDiscount = conviction > 0 ? conviction * 0.20 : 0;
+        const effectiveSlippageRate = this.estimatedSlippageRate * (1 + Math.max(exitPressure, 0)) * Math.max(0.7, 1 - convictionDiscount);
+        return {
+            feesQuote,
+            slippageQuote: safeNotional * effectiveSlippageRate,
+        };
+    }
+
+    private getConsumptionRatio(previousQty: number, currentQty: number): number {
+        if (previousQty <= 0 || currentQty >= previousQty) {
+            return 0;
+        }
+        return (previousQty - currentQty) / previousQty;
+    }
+
+    private updateSmoothedBookState(
+        obi: number,
+        topObi: number,
+        spreadPct: number,
+        microPriceEdgePct: number,
+        depthRatio: number,
+        nearDepthShare: number,
+        bestBidQty: number,
+        bestAskQty: number,
+        absorption: { bullish: boolean, bearish: boolean }
+    ): SmoothedBookState {
+        const bidConsumption = this.getConsumptionRatio(this.lastBestBidQty, bestBidQty);
+        const askConsumption = this.getConsumptionRatio(this.lastBestAskQty, bestAskQty);
+        const absorptionBias = absorption.bullish ? 1 : absorption.bearish ? -1 : 0;
+
+        this.lastBestBidQty = bestBidQty;
+        this.lastBestAskQty = bestAskQty;
+
+        this.pushRollingValue(this.obiHistory, obi);
+        this.pushRollingValue(this.topObiHistory, topObi);
+        this.pushRollingValue(this.spreadHistory, spreadPct);
+        this.pushRollingValue(this.microPriceEdgeHistory, microPriceEdgePct);
+        this.pushRollingValue(this.depthRatioHistory, depthRatio);
+        this.pushRollingValue(this.nearDepthShareHistory, nearDepthShare);
+        this.pushRollingValue(this.bidConsumptionHistory, bidConsumption);
+        this.pushRollingValue(this.askConsumptionHistory, askConsumption);
+        this.pushRollingValue(this.absorptionBiasHistory, absorptionBias);
+
+        return {
+            smoothedObi: this.getAverage(this.obiHistory),
+            smoothedTopObi: this.getAverage(this.topObiHistory),
+            smoothedSpreadPct: this.getAverage(this.spreadHistory),
+            smoothedMicroPriceEdgePct: this.getAverage(this.microPriceEdgeHistory),
+            smoothedDepthRatio: this.getAverage(this.depthRatioHistory),
+            smoothedBidConsumption: this.getAverage(this.bidConsumptionHistory),
+            smoothedAskConsumption: this.getAverage(this.askConsumptionHistory),
+            smoothedAbsorptionBias: this.getAverage(this.absorptionBiasHistory),
+            smoothedNearDepthShare: this.getAverage(this.nearDepthShareHistory),
+            obiStdDev: this.getStandardDeviation(this.obiHistory),
+            microStdDev: this.getStandardDeviation(this.microPriceEdgeHistory),
+            obiSlope: this.getSlope(this.obiHistory),
+            topObiSlope: this.getSlope(this.topObiHistory),
+        };
+    }
+
+    private assessMarketRegime(
+        atrPct: number,
+        emaGapPct: number,
+        smoothed: SmoothedBookState
+    ): MarketRegimeAssessment {
+        const thinMarket =
+            smoothed.smoothedSpreadPct > this.maxSpreadPct * 0.92 ||
+            (smoothed.smoothedNearDepthShare < 0.18 && smoothed.smoothedSpreadPct > this.maxSpreadPct * 0.70);
+        const chopMarket =
+            atrPct < this.minAtrPct * 1.25 ||
+            (
+                Math.abs(smoothed.smoothedObi - 0.5) < 0.03 &&
+                Math.abs(emaGapPct) < Math.max(smoothed.smoothedSpreadPct * 0.35, 0.003) &&
+                smoothed.obiStdDev < 0.018 &&
+                smoothed.microStdDev < 0.0012
+            );
+        const hostileMarket =
+            smoothed.smoothedObi < 0.49 &&
+            smoothed.smoothedTopObi < 0.49 &&
+            smoothed.smoothedMicroPriceEdgePct < -0.0006 &&
+            smoothed.smoothedBidConsumption > 0.18 &&
+            smoothed.smoothedAbsorptionBias < -0.10;
+        const trendMarket =
+            !thinMarket &&
+            !hostileMarket &&
+            smoothed.smoothedObi > this.obiThreshold - 0.01 &&
+            smoothed.smoothedTopObi > 0.55 &&
+            smoothed.smoothedMicroPriceEdgePct > 0 &&
+            smoothed.smoothedDepthRatio > 1.03 &&
+            emaGapPct > Math.max(smoothed.smoothedSpreadPct * 0.30, 0.003) &&
+            smoothed.obiSlope >= -0.001;
+
+        if (this.dailyRealizedPnl <= -this.dailyLossLimitQuote) {
+            return {
+                regime: 'HALTED',
+                allowEntries: false,
+                riskMultiplier: 0,
+                minScoreAdjustment: 99,
+                note: `Daily stop ${this.dailyRealizedPnl.toFixed(2)}$`,
+            };
+        }
+
+        if (thinMarket) {
+            return {
+                regime: 'THIN',
+                allowEntries: false,
+                riskMultiplier: 0,
+                minScoreAdjustment: 99,
+                note: `Thin spread:${smoothed.smoothedSpreadPct.toFixed(3)}%`,
+            };
+        }
+
+        if (hostileMarket) {
+            return {
+                regime: 'HOSTILE',
+                allowEntries: false,
+                riskMultiplier: 0,
+                minScoreAdjustment: 99,
+                note: `Hostile OBI:${(smoothed.smoothedObi * 100).toFixed(1)}%`,
+            };
+        }
+
+        if (chopMarket) {
+            return {
+                regime: 'CHOP',
+                allowEntries: false,
+                riskMultiplier: 0,
+                minScoreAdjustment: 99,
+                note: `Chop ATR:${atrPct.toFixed(4)}%`,
+            };
+        }
+
+        if (trendMarket) {
+            return {
+                regime: 'TREND',
+                allowEntries: true,
+                riskMultiplier: this.dailyRealizedPnl <= -this.dailyCautionLossQuote ? 0.72 : 1,
+                minScoreAdjustment: 0,
+                note: `Trend OBI:${(smoothed.smoothedObi * 100).toFixed(1)}%`,
+            };
+        }
+
+        return {
+            regime: 'BALANCED',
+            allowEntries: true,
+            riskMultiplier: this.dailyRealizedPnl <= -this.dailyCautionLossQuote ? 0.45 : 0.62,
+            minScoreAdjustment: 1,
+            note: 'Balanced',
+        };
+    }
+
+    private recordClosedTradeOutcome(pnlQuote: number, reason: string) {
+        this.refreshDailyRiskState();
+        this.dailyRealizedPnl += pnlQuote;
+        this.dailyTradeCount++;
+
+        if (this.dailyRealizedPnl <= -this.dailyLossLimitQuote) {
+            Logger.warn(`[Risk] Daily stop active apres ${reason}: ${this.dailyRealizedPnl.toFixed(2)}$`);
+            this.riskPauseTicks = 0;
+            return;
+        }
+
+        if (pnlQuote < 0) {
+            this.riskPauseTicks = Math.max(this.riskPauseTicks, this.consecutiveLosses >= this.maxConsecutiveLosses ? 30 : 8);
+            return;
+        }
+
+        if (pnlQuote > 0) {
+            this.riskPauseTicks = Math.min(this.riskPauseTicks, 4);
+        }
     }
 
     // ── VWAP from Order Book ──
@@ -207,8 +475,12 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         return Math.floor(quantity * 100000) / 100000;
     }
 
-    private getEffectiveMinNotional(): number {
+    private getEffectiveEntryMinNotional(): number {
         return Math.max(this.minNotional, this.exchangeMinNotional);
+    }
+
+    private getEffectiveExitMinNotional(): number {
+        return this.exchangeMinNotional > 0 ? this.exchangeMinNotional : this.minNotional;
     }
 
     private getEffectiveMinQty(): number {
@@ -222,7 +494,51 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
     }
 
     private getDustIgnoreNotional(): number {
-        return this.getEffectiveMinNotional() * this.dustIgnoreRatio;
+        return this.getEffectiveExitMinNotional() * this.dustIgnoreRatio;
+    }
+
+    private getQuoteAsset(symbol: string): string {
+        const quoteAssets = ['USDC', 'USDT', 'BUSD', 'EUR'];
+        return quoteAssets.find((quoteAsset) => symbol.endsWith(quoteAsset)) || 'USDC';
+    }
+
+    private isInsufficientBalanceError(exchange: Exchange, error: unknown): boolean {
+        const details = exchange.getErrorDetails(error);
+        const normalizedMessage = details.message.toLowerCase();
+        return details.code === -2010 && normalizedMessage.includes('insufficient balance');
+    }
+
+    private async retryBuyWithFreshBalance(
+        exchange: Exchange,
+        symbol: string,
+        desiredQuoteToSpend: number,
+        executionReferencePrice: number
+    ) {
+        const quoteAsset = this.getQuoteAsset(symbol);
+        const balances = await exchange.getBalances();
+        const quoteBalance = balances.find((balance: any) => balance.asset === quoteAsset);
+        const freeQuoteBalance = quoteBalance ? parseFloat(quoteBalance.free || '0') : 0;
+        const spendableQuoteBalance = freeQuoteBalance * this.buyBalanceSafetyFactor;
+        const minEntryNotional = this.getEffectiveEntryMinNotional() * this.entrySafetyMultiplier;
+        const effectiveMinQty = this.getEffectiveMinQty();
+        const retryQuoteToSpend = Math.min(spendableQuoteBalance, desiredQuoteToSpend);
+        const retryQty = this.floorQuantity(retryQuoteToSpend / executionReferencePrice);
+        const retryNotional = retryQty * executionReferencePrice;
+
+        if (retryQty <= 0) {
+            return null;
+        }
+
+        if (effectiveMinQty > 0 && retryQty < effectiveMinQty) {
+            return null;
+        }
+
+        if (retryNotional < minEntryNotional) {
+            return null;
+        }
+
+        Logger.warn(`[Pro] Retry BUY avec balance fraiche: ${retryQty} BTC pour ~${retryNotional.toFixed(2)} ${quoteAsset}`);
+        return exchange.placeMarketBuy(symbol, retryQty);
     }
 
     private getSyncThresholdQty(): number {
@@ -248,7 +564,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             return false;
         }
 
-        return quantity * price >= this.getEffectiveMinNotional();
+        return quantity * price >= this.getEffectiveExitMinNotional();
     }
 
     private armManagedPosition(entryPrice: number, quantity: number, marketPrice: number) {
@@ -396,7 +712,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
 
     private blockExitBecauseExchangeFilters(price: number, sellQty: number, reason: string) {
         const sellNotional = sellQty * price;
-        const minExitNotional = this.getEffectiveMinNotional() * this.exitSafetyMultiplier;
+        const minExitNotional = this.getEffectiveExitMinNotional() * this.exitSafetyMultiplier;
         const effectiveMinQty = this.getEffectiveMinQty();
         if (!this.exitBlockedByNotional) {
             const qtyHint = effectiveMinQty > 0 && sellQty < effectiveMinQty
@@ -436,7 +752,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         if (
             restoredQty <= 0 ||
             (this.getEffectiveMinQty() > 0 && restoredQty < this.getEffectiveMinQty()) ||
-            restoredNotional < this.getEffectiveMinNotional()
+            restoredNotional < this.getEffectiveExitMinNotional()
         ) {
             return false;
         }
@@ -472,11 +788,25 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         const tickVelocity = this.getTickVelocity(price);
 
         await this.ensureExchangeRules(exchange, symbol);
+        this.refreshDailyRiskState();
 
         // Cooldown
         if (this.cooldownTicks > 0) {
             this.cooldownTicks--;
             this.latestState = `⏸️ Cooldown (${this.cooldownTicks}s) | ATR: ${atrPct.toFixed(4)}%`;
+            return;
+        }
+
+        if (!this.positionOpen && this.dailyRealizedPnl <= -this.dailyLossLimitQuote) {
+            this.marketRegime = 'HALTED';
+            this.latestRegime = this.marketRegime;
+            this.latestState = `🛑 Daily stop ${this.dailyRealizedPnl.toFixed(2)}$ | reset demain`;
+            return;
+        }
+
+        if (!this.positionOpen && this.riskPauseTicks > 0) {
+            this.riskPauseTicks--;
+            this.latestState = `🧯 Risk pause (${this.riskPauseTicks}) | Daily:${this.dailyRealizedPnl.toFixed(2)}$`;
             return;
         }
 
@@ -508,7 +838,6 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         const totalBidVol = bids.reduce((sum, [, qty]) => sum + qty, 0);
         const totalAskVol = asks.reduce((sum, [, qty]) => sum + qty, 0);
         const obi = totalBidVol / Math.max(totalBidVol + totalAskVol, Number.EPSILON);
-        this.latestOBI = obi;
         const topBidVol = bids.slice(0, 5).reduce((sum, [, qty]) => sum + qty, 0);
         const topAskVol = asks.slice(0, 5).reduce((sum, [, qty]) => sum + qty, 0);
         const topObi = topBidVol / Math.max(topBidVol + topAskVol, Number.EPSILON);
@@ -524,20 +853,43 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
         const microPrice = (bestAsk * bestBidQty + bestBid * bestAskQty) / Math.max(bestBidQty + bestAskQty, Number.EPSILON);
         const microPriceEdgePct = ((microPrice - midPrice) / midPrice) * 100;
         const depthRatio = bestBidQty / Math.max(bestAskQty, Number.EPSILON);
+        const nearDepthShare = (topBidVol + topAskVol) / Math.max(totalBidVol + totalAskVol, Number.EPSILON);
         const emaGapPct = ((this.emaFast - this.emaSlow) / price) * 100;
 
         const vwap = this.calculateVWAP(bids, asks);
         const absorption = this.detectAbsorption(bids, asks);
+        const smoothedBookState = this.updateSmoothedBookState(
+            obi,
+            topObi,
+            spreadPct,
+            microPriceEdgePct,
+            depthRatio,
+            nearDepthShare,
+            bestBidQty,
+            bestAskQty,
+            absorption
+        );
+        const regimeAssessment = this.assessMarketRegime(atrPct, emaGapPct, smoothedBookState);
+        this.marketRegime = regimeAssessment.regime;
+        this.latestRegime = regimeAssessment.regime;
+        this.latestOBI = smoothedBookState.smoothedObi;
+        this.latestSpread = smoothedBookState.smoothedSpreadPct;
 
         // ══════════════════════════════════════════════════
         // ──────────── ENTRY LOGIC ────────────
         // ══════════════════════════════════════════════════
         if (!this.positionOpen) {
-            const effectiveMinNotional = this.getEffectiveMinNotional();
+            const effectiveMinNotional = this.getEffectiveEntryMinNotional();
+            const spendableQuoteBalance = ctx.balanceQuote * this.buyBalanceSafetyFactor;
 
             // Balance check
-            if (ctx.balanceQuote < effectiveMinNotional) {
-                this.latestState = `💤 USDC: $${ctx.balanceQuote.toFixed(2)} < $${effectiveMinNotional.toFixed(2)}`;
+            if (spendableQuoteBalance < effectiveMinNotional) {
+                this.latestState = `💤 USDC dispo: $${spendableQuoteBalance.toFixed(2)} < $${effectiveMinNotional.toFixed(2)}`;
+                return;
+            }
+
+            if (!regimeAssessment.allowEntries) {
+                this.latestState = `🧭 ${regimeAssessment.regime} | ${regimeAssessment.note}`;
                 return;
             }
 
@@ -548,49 +900,54 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             const velocityOk = tickVelocity < this.maxTickVelocityPct;
 
             // ── Filter 3: OBI ──
-            const obiOk = obi > this.obiThreshold;
+            const obiOk = smoothedBookState.smoothedObi > this.obiThreshold;
 
             // ── Filter 4: Top-of-book OBI ──
-            const topObiOk = topObi > 0.56;
+            const topObiOk = smoothedBookState.smoothedTopObi > 0.56;
 
             // ── Filter 5: Spread ──
-            const spreadOk = spreadPct < this.maxSpreadPct;
+            const spreadOk = smoothedBookState.smoothedSpreadPct < this.maxSpreadPct;
 
             // ── Filter 6: Dual EMA Crossover ──
             const emaCrossOk = this.emaFast > this.emaSlow;
-            const trendStrengthOk = emaGapPct > Math.max(spreadPct * 0.35, 0.0025);
+            const trendStrengthOk = emaGapPct > Math.max(smoothedBookState.smoothedSpreadPct * 0.35, 0.0025);
 
             // ── Filter 7: VWAP ──
             const vwapOk = price <= vwap * 1.0001; // Buy at or below VWAP (discount)
 
-            // ── Filter 8: Microprice & best-bid dominance ──
-            const microPriceOk = microPriceEdgePct > 0;
-            const depthRatioOk = depthRatio > 1.08;
+            // ── Filter 8: Microprice & best-bid dominance, lisses ──
+            const microPriceOk = smoothedBookState.smoothedMicroPriceEdgePct > 0;
+            const depthRatioOk = smoothedBookState.smoothedDepthRatio > 1.08;
+            const persistenceOk =
+                smoothedBookState.obiSlope >= -0.001 &&
+                smoothedBookState.topObiSlope >= -0.0015 &&
+                smoothedBookState.smoothedAskConsumption > 0.04;
 
             // ── Bonus: Absorption signal ──
-            const absorptionBoost = absorption.bullish; // Ask wall eating = strong buy
+            const absorptionBoost = absorption.bullish || smoothedBookState.smoothedAbsorptionBias > 0.10; // Ask wall eating = strong buy
 
             // Score system: each filter adds points, trade when score >= threshold
             let score = 0;
             const scoreReasons: string[] = [];
 
-            if (obiOk) { score += 2; } else { scoreReasons.push(`OBI:${(obi * 100).toFixed(0)}%`); }
-            if (topObiOk) { score += 2; } else { scoreReasons.push(`TopOBI:${(topObi * 100).toFixed(0)}%`); }
-            if (spreadOk) { score += 1; } else { scoreReasons.push(`Sprd:${spreadPct.toFixed(3)}%`); }
+            if (obiOk) { score += 2; } else { scoreReasons.push(`OBI:${(smoothedBookState.smoothedObi * 100).toFixed(0)}%`); }
+            if (topObiOk) { score += 2; } else { scoreReasons.push(`TopOBI:${(smoothedBookState.smoothedTopObi * 100).toFixed(0)}%`); }
+            if (spreadOk) { score += 1; } else { scoreReasons.push(`Sprd:${smoothedBookState.smoothedSpreadPct.toFixed(3)}%`); }
             if (emaCrossOk) { score += 1; } else { scoreReasons.push('EMA↓'); }
             if (trendStrengthOk) { score += 1; } else { scoreReasons.push(`Trend:${emaGapPct.toFixed(3)}%`); }
             if (vwapOk) { score += 1; } else { scoreReasons.push('VWAP↑'); }
-            if (microPriceOk) { score += 1; } else { scoreReasons.push(`Micro:${microPriceEdgePct.toFixed(4)}%`); }
-            if (depthRatioOk) { score += 1; } else { scoreReasons.push(`Depth:${depthRatio.toFixed(2)}`); }
+            if (microPriceOk) { score += 1; } else { scoreReasons.push(`Micro:${smoothedBookState.smoothedMicroPriceEdgePct.toFixed(4)}%`); }
+            if (depthRatioOk) { score += 1; } else { scoreReasons.push(`Depth:${smoothedBookState.smoothedDepthRatio.toFixed(2)}`); }
             if (atrOk) { score += 1; } else { scoreReasons.push('Chop'); }
             if (velocityOk) { score += 1; } else { scoreReasons.push('Spike'); }
-            if (absorptionBoost) { score += 2; scoreReasons.push('🔥Absorb!'); }
+            if (persistenceOk) { score += 1; } else { scoreReasons.push('Persist'); }
+            if (absorptionBoost) { score += 1; scoreReasons.push('🔥Absorb!'); }
 
-            const minScore = this.minScore;
-            const maxScore = 13;
+            const minScore = this.minScore + regimeAssessment.minScoreAdjustment + (this.consecutiveLosses >= 2 ? 1 : 0);
+            const maxScore = 14;
 
             if (score < minScore) {
-                this.latestState = `🔍 Score: ${score}/${minScore} | ${scoreReasons.join(' ')}`;
+                this.latestState = `🔍 ${regimeAssessment.regime} ${score}/${minScore} | ${scoreReasons.join(' ')}`;
                 return;
             }
 
@@ -601,14 +958,25 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             // ── Position Sizing ──
             const minEntryNotional = effectiveMinNotional * this.entrySafetyMultiplier;
             const lossPenalty = Math.min(this.consecutiveLosses * this.lossPenaltyPerStreak, 0.20);
-            const allocation = Math.min(Math.max(this.baseRiskAllocation + conviction * this.scoreRiskBonus - lossPenalty, 0.30), 0.90);
-            const dynamicCap = Math.max(minEntryNotional, this.maxPositionNotional * (0.65 + conviction * 0.35));
-            const allocationQuote = ctx.balanceQuote * allocation;
-            const quoteToSpend = Math.min(ctx.balanceQuote, Math.max(minEntryNotional, Math.min(allocationQuote, dynamicCap)));
-            let qty = quoteToSpend / price;
+            const dailyPenalty = this.dailyRealizedPnl < 0
+                ? Math.min(Math.abs(this.dailyRealizedPnl) / Math.max(this.dailyLossLimitQuote, Number.EPSILON) * 0.22, 0.22)
+                : 0;
+            const rawAllocation = (this.baseRiskAllocation + conviction * this.scoreRiskBonus - lossPenalty - dailyPenalty) * regimeAssessment.riskMultiplier;
+            const allocation = Math.min(Math.max(rawAllocation, this.minRiskAllocation), this.maxRiskAllocation);
+            const dynamicCap = Math.max(minEntryNotional, this.maxPositionNotional * regimeAssessment.riskMultiplier * (0.78 + conviction * 0.22));
+            const allocationQuote = spendableQuoteBalance * allocation;
+            const quoteToSpend = Math.min(spendableQuoteBalance, Math.max(minEntryNotional, Math.min(allocationQuote, dynamicCap)));
+            const executionReferencePrice = Math.max(price, bestAsk) * this.buyPriceSafetyMultiplier;
+            let qty = quoteToSpend / executionReferencePrice;
             qty = this.floorQuantity(qty);
-            const entryNotional = qty * price;
+            const estimatedEntryNotional = qty * executionReferencePrice;
             const effectiveMinQty = this.getEffectiveMinQty();
+            const entryCosts = this.estimateExecutionCosts(
+                estimatedEntryNotional,
+                conviction,
+                Math.max(smoothedBookState.smoothedSpreadPct / Math.max(this.maxSpreadPct, Number.EPSILON) - 0.5, 0)
+            );
+            const entryReason = `${regimeAssessment.regime.toLowerCase()}_entry`;
 
             if (qty <= 0) {
                 this.latestState = "⚠️ Qty trop faible";
@@ -620,8 +988,8 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
                 return;
             }
 
-            if (entryNotional < minEntryNotional) {
-                this.latestState = `💤 Notional reel trop faible: $${entryNotional.toFixed(2)} < $${minEntryNotional.toFixed(2)}`;
+            if (estimatedEntryNotional < minEntryNotional) {
+                this.latestState = `💤 Notional reel trop faible: $${estimatedEntryNotional.toFixed(2)} < $${minEntryNotional.toFixed(2)}`;
                 return;
             }
 
@@ -640,8 +1008,8 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             this.breakEvenPrice = price + Math.max(spreadAbs * 0.5, price * 0.00006);
             this.tpExtensionsUsed = 0;
 
-            Logger.success(`📊 [Pro] ENTRY! Score:${score} Conv:${(conviction * 100).toFixed(0)}% OBI:${(obi * 100).toFixed(0)}% Top:${(topObi * 100).toFixed(0)}% EMA:${this.emaFast.toFixed(0)}/${this.emaSlow.toFixed(0)} ATR:${atrPct.toFixed(4)}%`);
-            Logger.info(`[Pro] TP:$${this.takeProfitPrice.toFixed(2)} SL:$${this.stopLossPrice.toFixed(2)} Trail:${(this.currentTrailingPct * 100).toFixed(3)}% Qty:${qty}`);
+            Logger.success(`📊 [Pro] ENTRY! Regime:${regimeAssessment.regime} Score:${score} Conv:${(conviction * 100).toFixed(0)}% OBI:${(smoothedBookState.smoothedObi * 100).toFixed(0)}% Top:${(smoothedBookState.smoothedTopObi * 100).toFixed(0)}% EMA:${this.emaFast.toFixed(0)}/${this.emaSlow.toFixed(0)} ATR:${atrPct.toFixed(4)}%`);
+            Logger.info(`[Pro] TP:$${this.takeProfitPrice.toFixed(2)} SL:$${this.stopLossPrice.toFixed(2)} Trail:${(this.currentTrailingPct * 100).toFixed(3)}% Qty:${qty} EstCost:$${estimatedEntryNotional.toFixed(2)} Alloc:${(allocation * 100).toFixed(1)}%`);
 
             try {
                 const result = await exchange.placeMarketBuy(symbol, qty);
@@ -650,9 +1018,44 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
                 this.actualQuantity = result.actualQuantity;
                 this.untrackedWalletPositionSeen = false;
                 this.exitBlockedByNotional = false;
-                this.latestState = `📈 Long @ $${price.toFixed(2)} | Score:${score}`;
-                Tracker.addTrade('BUY', price, this.actualQuantity);
+                this.latestState = `📈 ${regimeAssessment.regime} Long @ $${price.toFixed(2)} | Score:${score}`;
+                Tracker.addTrade('BUY', price, this.actualQuantity, {
+                    reason: entryReason,
+                    marketRegime: regimeAssessment.regime,
+                    conviction,
+                    estimatedFeesQuote: entryCosts.feesQuote,
+                    estimatedSlippageQuote: entryCosts.slippageQuote,
+                });
             } catch (e) {
+                if (this.isInsufficientBalanceError(exchange, e)) {
+                    try {
+                        const retryResult = await this.retryBuyWithFreshBalance(
+                            exchange,
+                            symbol,
+                            quoteToSpend,
+                            executionReferencePrice
+                        );
+
+                        if (retryResult) {
+                            this.positionOpen = true;
+                            this.buyPrice = price;
+                            this.actualQuantity = retryResult.actualQuantity;
+                            this.untrackedWalletPositionSeen = false;
+                            this.exitBlockedByNotional = false;
+                            this.latestState = `📈 ${regimeAssessment.regime} Long @ $${price.toFixed(2)} | Retry`;
+                            Tracker.addTrade('BUY', price, this.actualQuantity, {
+                                reason: `${entryReason}_retry`,
+                                marketRegime: regimeAssessment.regime,
+                                conviction,
+                                estimatedFeesQuote: entryCosts.feesQuote,
+                                estimatedSlippageQuote: entryCosts.slippageQuote,
+                            });
+                            return;
+                        }
+                    } catch (retryError) {
+                        Logger.error("Pro BUY retry échoué");
+                    }
+                }
                 Logger.error("Pro BUY échoué");
                 this.latestState = "❌ Buy failed";
                 this.cooldownTicks = 5;
@@ -688,7 +1091,7 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             }
 
             const sellQty = this.getSellQuantity(ctx.balanceBTC);
-            const minExitNotional = this.getEffectiveMinNotional() * this.exitSafetyMultiplier;
+            const minExitNotional = this.getEffectiveExitMinNotional() * this.exitSafetyMultiplier;
             const effectiveMinQty = this.getEffectiveMinQty();
             const canSendSellOrder = sellQty * price >= minExitNotional && (effectiveMinQty <= 0 || sellQty >= effectiveMinQty);
             if (sellQty <= 0) {
@@ -705,10 +1108,10 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
             const strongTrendContinuation =
                 this.tpExtensionsUsed < this.maxTpExtensions &&
                 price >= this.takeProfitPrice &&
-                obi > Math.max(this.obiThreshold + 0.05, 0.64) &&
-                topObi > 0.60 &&
+                smoothedBookState.smoothedObi > Math.max(this.obiThreshold + 0.04, 0.63) &&
+                smoothedBookState.smoothedTopObi > 0.59 &&
                 this.emaFast > this.emaSlow &&
-                microPriceEdgePct > 0 &&
+                smoothedBookState.smoothedMicroPriceEdgePct > 0 &&
                 tickVelocity < this.maxTickVelocityPct * 0.8;
 
             if (strongTrendContinuation) {
@@ -729,12 +1132,21 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
                 }
                 Logger.success(`🚀 [Pro] Take-Profit! $${price.toFixed(2)} ≥ $${this.takeProfitPrice.toFixed(2)}`);
                 try {
+                    const grossPnlQuote = (price - this.buyPrice) * sellQty;
+                    const exitCosts = this.estimateExecutionCosts(sellQty * price, this.tradeConviction, smoothedBookState.smoothedSpreadPct / Math.max(this.maxSpreadPct, Number.EPSILON));
                     await exchange.placeMarketSell(symbol, sellQty);
                     this.resetPositionState();
                     this.cooldownTicks = 3;
                     this.consecutiveLosses = 0;
                     this.latestState = "✅ Profit encaissé!";
-                    Tracker.addTrade('SELL', price, sellQty);
+                    this.recordClosedTradeOutcome(grossPnlQuote, 'take_profit');
+                    Tracker.addTrade('SELL', price, sellQty, {
+                        reason: 'take_profit',
+                        marketRegime: this.marketRegime,
+                        conviction: this.tradeConviction,
+                        estimatedFeesQuote: exitCosts.feesQuote,
+                        estimatedSlippageQuote: exitCosts.slippageQuote,
+                    });
                 } catch (e) { Logger.error("Pro SELL (TP) échoué"); }
                 return;
             }
@@ -753,57 +1165,86 @@ export class OrderBookScalpingStrategy implements ITradingStrategy {
                     this.consecutiveLosses++;
                 }
                 try {
+                    const grossPnlQuote = (price - this.buyPrice) * sellQty;
+                    const exitCosts = this.estimateExecutionCosts(sellQty * price, this.tradeConviction, smoothedBookState.smoothedBidConsumption + smoothedBookState.smoothedSpreadPct / Math.max(this.maxSpreadPct, Number.EPSILON));
+                    const exitReason = wasProfit ? 'trailing_profit' : 'stop_loss';
                     await exchange.placeMarketSell(symbol, sellQty);
                     this.resetPositionState();
                     // Longer cooldown after loss streak
                     this.cooldownTicks = this.consecutiveLosses >= this.maxConsecutiveLosses ? 15 : 5;
                     this.latestState = wasProfit ? "📈 Trailing profit!" : `🛡️ SL (streak: ${this.consecutiveLosses})`;
-                    Tracker.addTrade('SELL', price, sellQty);
+                    this.recordClosedTradeOutcome(grossPnlQuote, exitReason);
+                    Tracker.addTrade('SELL', price, sellQty, {
+                        reason: exitReason,
+                        marketRegime: this.marketRegime,
+                        conviction: this.tradeConviction,
+                        estimatedFeesQuote: exitCosts.feesQuote,
+                        estimatedSlippageQuote: exitCosts.slippageQuote,
+                    });
                 } catch (e) { Logger.error("Pro SELL (SL) échoué"); }
                 return;
             }
 
             // 3. OBI Reversal Exit
-            if (obi < this.obiExitThreshold && this.emaFast <= this.emaSlow) {
+            if ((smoothedBookState.smoothedObi < this.obiExitThreshold && this.emaFast <= this.emaSlow) || this.marketRegime === 'HOSTILE') {
                 if (!canSendSellOrder) {
                     this.blockExitBecauseExchangeFilters(price, sellQty, "OBI reversal");
                     return;
                 }
-                Logger.warn(`⚡ [Pro] OBI Reversal (${(obi * 100).toFixed(1)}%) @ $${price.toFixed(2)}`);
+                const exitReason = this.marketRegime === 'HOSTILE' ? 'hostile_regime_exit' : 'obi_reversal';
+                Logger.warn(`⚡ [Pro] OBI Reversal (${(smoothedBookState.smoothedObi * 100).toFixed(1)}%) @ $${price.toFixed(2)}`);
                 try {
                     const wasProfit = price > this.buyPrice;
+                    const grossPnlQuote = (price - this.buyPrice) * sellQty;
+                    const exitCosts = this.estimateExecutionCosts(sellQty * price, this.tradeConviction, smoothedBookState.smoothedBidConsumption);
                     await exchange.placeMarketSell(symbol, sellQty);
                     this.resetPositionState();
                     this.cooldownTicks = 4;
                     if (!wasProfit) this.consecutiveLosses++;
                     else this.consecutiveLosses = 0;
                     this.latestState = "⚡ OBI Exit";
-                    Tracker.addTrade('SELL', price, sellQty);
+                    this.recordClosedTradeOutcome(grossPnlQuote, exitReason);
+                    Tracker.addTrade('SELL', price, sellQty, {
+                        reason: exitReason,
+                        marketRegime: this.marketRegime,
+                        conviction: this.tradeConviction,
+                        estimatedFeesQuote: exitCosts.feesQuote,
+                        estimatedSlippageQuote: exitCosts.slippageQuote,
+                    });
                 } catch (e) { Logger.error("Pro SELL (OBI) échoué"); }
                 return;
             }
 
             // 4. Bearish Absorption while holding → early exit
-            if (absorption.bearish && price < this.buyPrice) {
+            if ((absorption.bearish || smoothedBookState.smoothedAbsorptionBias < -0.10) && price < this.buyPrice) {
                 if (!canSendSellOrder) {
                     this.blockExitBecauseExchangeFilters(price, sellQty, "Emergency exit");
                     return;
                 }
                 Logger.warn(`🔥 [Pro] Bid Wall absorbed! Emergency exit @ $${price.toFixed(2)}`);
                 try {
+                    const grossPnlQuote = (price - this.buyPrice) * sellQty;
+                    const exitCosts = this.estimateExecutionCosts(sellQty * price, this.tradeConviction, smoothedBookState.smoothedBidConsumption + 0.4);
                     await exchange.placeMarketSell(symbol, sellQty);
                     this.resetPositionState();
                     this.cooldownTicks = 5;
                     this.consecutiveLosses++;
                     this.latestState = "🔥 Absorption Exit";
-                    Tracker.addTrade('SELL', price, sellQty);
+                    this.recordClosedTradeOutcome(grossPnlQuote, 'absorption_exit');
+                    Tracker.addTrade('SELL', price, sellQty, {
+                        reason: 'absorption_exit',
+                        marketRegime: this.marketRegime,
+                        conviction: this.tradeConviction,
+                        estimatedFeesQuote: exitCosts.feesQuote,
+                        estimatedSlippageQuote: exitCosts.slippageQuote,
+                    });
                 } catch (e) { Logger.error("Pro SELL (Absorb) échoué"); }
                 return;
             }
 
             // ── Still holding ──
             const pnl = ((price - this.buyPrice) / this.buyPrice * 100).toFixed(3);
-            this.latestState = `📈 $${this.buyPrice.toFixed(0)} | PnL:${pnl}% | TP:$${this.takeProfitPrice.toFixed(0)} | SL:$${this.stopLossPrice.toFixed(0)} | OBI:${(obi * 100).toFixed(0)}%`;
+            this.latestState = `📈 ${this.marketRegime} | $${this.buyPrice.toFixed(0)} | PnL:${pnl}% | TP:$${this.takeProfitPrice.toFixed(0)} | SL:$${this.stopLossPrice.toFixed(0)} | OBI:${(smoothedBookState.smoothedObi * 100).toFixed(0)}%`;
         }
     }
 }

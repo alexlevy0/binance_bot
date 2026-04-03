@@ -13,6 +13,10 @@ export class MarketRecorder {
 
     constructor(private enabled: boolean = false) {}
 
+    private getSessionFilePath(input: ReplaySessionInput): string {
+        return join(REPLAY_DIR, `${input.symbol}-${input.mode}.jsonl`);
+    }
+
     public isEnabled(): boolean {
         return this.enabled;
     }
@@ -30,8 +34,7 @@ export class MarketRecorder {
             mkdirSync(REPLAY_DIR, { recursive: true });
         }
 
-        const safeTimestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        this.filePath = join(REPLAY_DIR, `${input.symbol}-${input.mode}-${safeTimestamp}.jsonl`);
+        this.filePath = this.getSessionFilePath(input);
 
         const header: ReplaySessionHeader = {
             type: 'session',
@@ -41,7 +44,7 @@ export class MarketRecorder {
         };
 
         appendFileSync(this.filePath, `${JSON.stringify(header)}\n`);
-        Logger.info(`[Replay] Enregistrement marche actif -> ${this.filePath}`);
+        Logger.info(`[Replay] Enregistrement marche actif -> ${this.filePath} (append session)`);
     }
 
     public recordTick(input: TickInput) {

@@ -1,5 +1,5 @@
 import { existsSync, readdirSync, readFileSync } from "fs";
-import { resolve } from "path";
+import { basename, resolve } from "path";
 import { Exchange, type SymbolTradingRules } from "../core/exchange";
 import { Tracker } from "../core/tracker";
 import { Logger } from "../utils/logger";
@@ -296,15 +296,65 @@ function loadReplaySession(filePath: string): ReplaySession {
     }
 
     const entries = raw.map((line) => JSON.parse(line) as ReplayFileEntry);
-    const firstEntry = entries[0];
-    if (!firstEntry || firstEntry.type !== 'session') {
-        throw new Error(`Fichier replay invalide: header manquant dans ${filePath}`);
-    }
-    const header: ReplaySessionHeader = firstEntry;
+    const sessionIndexes = entries
+        .map((entry, index) => entry.type === 'session' ? index : -1)
+        .filter((index) => index >= 0);
 
-    const ticks = entries.slice(1).filter((entry): entry is RecordedMarketTick => entry.type === 'tick');
+    const inferLegacyHeader = (): ReplaySessionHeader => {
+        const fileName = basename(filePath, '.jsonl');
+        const match = fileName.match(/^(.*?)-(live|demo)(?:-.+)?$/);
+        const symbol = match?.[1] || 'BTCUSDC';
+        const mode = (match?.[2] as ReplaySessionHeader['mode']) || 'demo';
+        const ticks = entries.filter((entry): entry is RecordedMarketTick => entry.type === 'tick');
+        const firstTick = ticks[0];
+
+        if (!firstTick) {
+            throw new Error(`Fichier replay vide ou invalide: ${filePath}`);
+        }
+
+        Logger.warn(`[Replay] Fichier legacy sans header detecte, valeurs par defaut appliquees -> ${filePath}`);
+        return {
+            type: 'session',
+            version: 1,
+            recordedAt: new Date(firstTick.time).toISOString(),
+            symbol,
+            mode,
+            initialBalances: {
+                base: 0,
+                quote: 25,
+            },
+            trackedOpenPosition: null,
+            exchangeRules: {
+                minNotional: 0,
+                minQty: 0,
+                stepSize: 0,
+            },
+        };
+    };
+
+    const lastSessionIndex = sessionIndexes.at(-1);
+    if (lastSessionIndex == null) {
+        const header = inferLegacyHeader();
+        const ticks = entries.filter((entry): entry is RecordedMarketTick => entry.type === 'tick');
+        if (ticks.length === 0) {
+            throw new Error(`Fichier replay sans tick: ${filePath}`);
+        }
+
+        return {
+            header,
+            ticks,
+            filePath,
+        };
+    }
+
+    const header = entries[lastSessionIndex] as ReplaySessionHeader;
+
+    const nextSessionIndex = sessionIndexes.find((index) => index > lastSessionIndex) ?? entries.length;
+    const ticks = entries
+        .slice(lastSessionIndex + 1, nextSessionIndex)
+        .filter((entry): entry is RecordedMarketTick => entry.type === 'tick');
     if (ticks.length === 0) {
-        throw new Error(`Fichier replay sans tick: ${filePath}`);
+        throw new Error(`Fichier replay sans tick dans la derniere session: ${filePath}`);
     }
 
     return {

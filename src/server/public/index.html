@@ -37,6 +37,8 @@
         .stats-bar {
             display: flex;
             gap: 15px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
 
         .stat-card {
@@ -260,11 +262,20 @@
             <div class="stat-card"><span>Current Price</span>
                 <div class="val" id="val-price">...</div>
             </div>
-            <div class="stat-card"><span>Total PnL</span>
-                <div class="val" id="val-pnl">...</div>
+            <div class="stat-card"><span>Today's PnL</span>
+                <div class="val" id="val-pnl-today">...</div>
             </div>
-            <div class="stat-card"><span>Win Rate</span>
-                <div class="val" id="val-winrate">...</div>
+            <div class="stat-card"><span>Tracker PnL</span>
+                <div class="val" id="val-pnl-global">...</div>
+            </div>
+            <div class="stat-card"><span>Global Win Rate</span>
+                <div class="val" id="val-winrate-global">...</div>
+            </div>
+            <div class="stat-card"><span>Session PnL</span>
+                <div class="val" id="val-pnl-session">...</div>
+            </div>
+            <div class="stat-card"><span>Session Win Rate</span>
+                <div class="val" id="val-winrate-session">...</div>
             </div>
             <div class="stat-card"><span>Strategy Status</span>
                 <div class="val log-INFO" id="val-state" style="font-size: 0.95rem;">...</div>
@@ -550,6 +561,11 @@
             return null;
         }
 
+        function toFiniteNumber(value, fallback = 0) {
+            const parsed = Number(value);
+            return Number.isFinite(parsed) ? parsed : fallback;
+        }
+
         async function initChart() {
             try {
                 const interval = document.getElementById('interval-select').value;
@@ -591,21 +607,52 @@
                 const priceNum = parseFloat(data.price);
                 document.getElementById('val-price').innerText = priceNum ? '$' + priceNum.toLocaleString(undefined, { minimumFractionDigits: 2 }) : '...';
 
-                const pnlBox = document.getElementById('val-pnl');
-                pnlBox.innerText = (data.pnl >= 0 ? '+' : '') + data.pnl.toFixed(4) + ' $';
-                pnlBox.className = 'val ' + (data.pnl >= 0 ? 'positive' : 'negative');
+                const todayPnl = data.todayPnl !== undefined && data.todayPnl !== null ? toFiniteNumber(data.todayPnl, 0) : null;
+                const todayPnlPct = data.todayPnlPct !== undefined && data.todayPnlPct !== null ? toFiniteNumber(data.todayPnlPct, 0) : null;
+                const globalPnl = toFiniteNumber(data.pnl, 0);
+                const sessionPnl = toFiniteNumber(data.sessionPnl, 0);
+                const globalWinRate = toFiniteNumber(data.winRate, 0);
+                const sessionWinRate = toFiniteNumber(data.sessionWinRate, 0);
+                const totalTrades = toFiniteNumber(data.totalTrades, 0);
+                const sessionTotalTrades = toFiniteNumber(data.sessionTotalTrades, 0);
+                const balanceBTC = data.balanceBTC !== undefined ? toFiniteNumber(data.balanceBTC, 0) : null;
+                const balanceQuote = data.balanceQuote !== undefined ? toFiniteNumber(data.balanceQuote, 0) : null;
+                const obiValue = toFiniteNumber(data.obi, 0);
+                const spreadValue = data.spread !== undefined ? toFiniteNumber(data.spread, 0) : null;
 
-                document.getElementById('val-winrate').innerText = data.winRate.toFixed(1) + '% (' + data.totalTrades + ')';
-                document.getElementById('val-state').innerText = data.state;
-                document.getElementById('val-btc').innerText = data.balanceBTC !== undefined ? data.balanceBTC.toFixed(8) : '...';
-                document.getElementById('val-usdc').innerText = data.balanceQuote !== undefined ? '$' + data.balanceQuote.toFixed(2) : '...';
+                const todayPnlBox = document.getElementById('val-pnl-today');
+                if (todayPnl === null || todayPnlPct === null) {
+                    todayPnlBox.innerText = 'n/a';
+                    todayPnlBox.className = 'val';
+                    todayPnlBox.title = data.todayReferenceLabel || 'Today PnL indisponible';
+                } else {
+                    const pnlSign = todayPnl >= 0 ? '+' : '';
+                    const pctSign = todayPnlPct >= 0 ? '+' : '';
+                    todayPnlBox.innerText = `${pnlSign}${todayPnl.toFixed(2)} $ (${pctSign}${todayPnlPct.toFixed(2)}%)`;
+                    todayPnlBox.className = 'val ' + (todayPnl >= 0 ? 'positive' : 'negative');
+                    todayPnlBox.title = data.todayReferenceLabel || 'Reference inconnue';
+                }
+
+                const globalPnlBox = document.getElementById('val-pnl-global');
+                globalPnlBox.innerText = (globalPnl >= 0 ? '+' : '') + globalPnl.toFixed(4) + ' $';
+                globalPnlBox.className = 'val ' + (globalPnl >= 0 ? 'positive' : 'negative');
+
+                const sessionPnlBox = document.getElementById('val-pnl-session');
+                sessionPnlBox.innerText = (sessionPnl >= 0 ? '+' : '') + sessionPnl.toFixed(4) + ' $';
+                sessionPnlBox.className = 'val ' + (sessionPnl >= 0 ? 'positive' : 'negative');
+
+                document.getElementById('val-winrate-global').innerText = globalWinRate.toFixed(1) + '% (' + totalTrades + ')';
+                document.getElementById('val-winrate-session').innerText = sessionWinRate.toFixed(1) + '% (' + sessionTotalTrades + ')';
+                document.getElementById('val-state').innerText = data.state || '...';
+                document.getElementById('val-btc').innerText = balanceBTC !== null ? balanceBTC.toFixed(8) : '...';
+                document.getElementById('val-usdc').innerText = balanceQuote !== null ? '$' + balanceQuote.toFixed(2) : '...';
 
                 const obiBox = document.getElementById('val-obi');
-                const obiPct = (data.obi * 100).toFixed(1) + '%';
+                const obiPct = (obiValue * 100).toFixed(1) + '%';
                 obiBox.innerText = obiPct;
-                obiBox.className = 'val ' + (data.obi > 0.55 ? 'positive' : data.obi < 0.45 ? 'negative' : '');
+                obiBox.className = 'val ' + (obiValue > 0.55 ? 'positive' : obiValue < 0.45 ? 'negative' : '');
 
-                document.getElementById('val-spread').innerText = data.spread !== undefined ? data.spread.toFixed(4) + '%' : '...';
+                document.getElementById('val-spread').innerText = spreadValue !== null ? spreadValue.toFixed(4) + '%' : '...';
 
                 // Render Logs Box
                 const logsBox = document.getElementById('logs-box');

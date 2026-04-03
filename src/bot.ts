@@ -16,6 +16,12 @@ export class TradingBot {
     public latestPrice: number = 0;
     public balanceBTC: number = 0;
     public balanceQuote: number = 0;
+    public totalBalanceBTC: number = 0;
+    public totalBalanceQuote: number = 0;
+    public todayPnlQuote: number | null = null;
+    public todayPnlPct: number | null = null;
+    public todayReferenceLabel: string = "Indisponible";
+    public todayPnlSource: 'snapshot' | 'runtime' | 'unavailable' = 'unavailable';
     private baseAsset: string;
     private quoteAsset: string;
     private isRunning: boolean = false;
@@ -37,6 +43,7 @@ export class TradingBot {
 
     // Balance refresh interval
     private balanceIntervalId: ReturnType<typeof setInterval> | null = null;
+    private todayReferenceQuote: number | null = null;
 
     constructor(exchange: Exchange, symbol: string = 'BTCUSDC', options: TradingBotOptions = {}) {
         this.exchange = exchange;
@@ -70,6 +77,7 @@ export class TradingBot {
 
         // Fetch initial balances
         await this.refreshBalances();
+        await this.initializeMarketReferenceState();
 
         if (this.marketRecorder?.isEnabled()) {
             try {
@@ -111,6 +119,7 @@ export class TradingBot {
         // Wire up WebSocket callbacks
         this.wsFeed.onTrade = (price: number, qty: number, isBuyerMaker: boolean) => {
             this.latestPrice = price;
+            this.updateTodayPnl(price);
 
             // Throttle strategy execution to avoid overwhelming
             const now = Date.now();
@@ -152,9 +161,90 @@ export class TradingBot {
             const quote = balances.find((b: any) => b.asset === this.quoteAsset);
             this.balanceBTC = base ? parseFloat(base.free) : 0;
             this.balanceQuote = quote ? parseFloat(quote.free) : 0;
+            this.totalBalanceBTC = base ? parseFloat(base.free) + parseFloat(base.locked || '0') : 0;
+            this.totalBalanceQuote = quote ? parseFloat(quote.free) + parseFloat(quote.locked || '0') : 0;
+            this.updateTodayPnl();
         } catch (e) {
             // Non-blocking
         }
+    }
+
+    private async initializeMarketReferenceState() {
+        try {
+            if (this.latestPrice <= 0) {
+                this.latestPrice = await this.exchange.getTickerPrice(this.symbol);
+            }
+        } catch (error) {
+            Logger.warn(`[PnL] Impossible de recuperer le prix initial pour ${this.symbol}`);
+        }
+
+        await this.initializeTodayPnlReference();
+        this.updateTodayPnl();
+    }
+
+    private async initializeTodayPnlReference() {
+        const referencePrice = this.latestPrice > 0 ? this.latestPrice : null;
+        if (!referencePrice) {
+            this.setRuntimeTodayReference("prix initial indisponible");
+            return;
+        }
+
+        const snapshot = await this.exchange.getLatestSpotAccountSnapshot();
+        if (!snapshot || !snapshot.balances.length) {
+            this.setRuntimeTodayReference("snapshot Binance indisponible");
+            return;
+        }
+
+        const snapshotBase = snapshot.balances.find((balance) => balance.asset === this.baseAsset);
+        const snapshotQuote = snapshot.balances.find((balance) => balance.asset === this.quoteAsset);
+        const snapshotBaseQty = snapshotBase ? snapshotBase.free + snapshotBase.locked : 0;
+        const snapshotQuoteQty = snapshotQuote ? snapshotQuote.free + snapshotQuote.locked : 0;
+
+        if (snapshotBaseQty <= 0 && snapshotQuoteQty <= 0) {
+            this.setRuntimeTodayReference("aucun solde snapshot pour la paire");
+            return;
+        }
+
+        try {
+            const snapshotPrice = await this.exchange.getHistoricalClosePrice(this.symbol, snapshot.updateTime);
+            this.todayReferenceQuote = snapshotBaseQty * snapshotPrice + snapshotQuoteQty;
+            this.todayPnlSource = 'snapshot';
+            this.todayReferenceLabel = `Snapshot ${new Date(snapshot.updateTime).toLocaleString()}`;
+        } catch (error) {
+            this.setRuntimeTodayReference("prix snapshot indisponible");
+        }
+    }
+
+    private setRuntimeTodayReference(reason: string) {
+        if (this.latestPrice > 0) {
+            this.todayReferenceQuote = this.getCurrentEquityQuote(this.latestPrice);
+            this.todayPnlSource = 'runtime';
+            this.todayReferenceLabel = `Depuis lancement (${reason})`;
+            return;
+        }
+
+        this.todayReferenceQuote = null;
+        this.todayPnlSource = 'unavailable';
+        this.todayReferenceLabel = `Indisponible (${reason})`;
+    }
+
+    private getCurrentEquityQuote(price: number): number {
+        return this.totalBalanceQuote + this.totalBalanceBTC * price;
+    }
+
+    private updateTodayPnl(priceOverride?: number) {
+        const price = priceOverride ?? this.latestPrice;
+        if (!Number.isFinite(price) || price <= 0 || this.todayReferenceQuote == null) {
+            this.todayPnlQuote = null;
+            this.todayPnlPct = null;
+            return;
+        }
+
+        const equityQuote = this.getCurrentEquityQuote(price);
+        this.todayPnlQuote = equityQuote - this.todayReferenceQuote;
+        this.todayPnlPct = this.todayReferenceQuote > 0
+            ? (this.todayPnlQuote / this.todayReferenceQuote) * 100
+            : 0;
     }
 
     private async runStrategies(price: number) {

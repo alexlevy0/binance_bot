@@ -2543,13 +2543,781 @@
       "side": "BUY",
       "price": 67042.48,
       "quantity": 0.00015
+    },
+    {
+      "time": 1775235139,
+      "side": "SELL",
+      "price": 67049.18,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775235147,
+      "side": "BUY",
+      "price": 67044.6,
+      "quantity": 0.00025
+    },
+    {
+      "time": 1775235360,
+      "side": "SELL",
+      "price": 67019.2,
+      "quantity": 0.00025
+    },
+    {
+      "time": 1775235368,
+      "side": "BUY",
+      "price": 67006.68,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775235372,
+      "side": "SELL",
+      "price": 67004.29,
+      "quantity": 0.00018
+    },
+    {
+      "time": 1775235382,
+      "side": "BUY",
+      "price": 67006.67,
+      "quantity": 0.00019
+    },
+    {
+      "time": 1775235386,
+      "side": "SELL",
+      "price": 67008.01,
+      "quantity": 0.00019
+    },
+    {
+      "time": 1775235407,
+      "side": "BUY",
+      "price": 67008.02,
+      "quantity": 0.00022
+    },
+    {
+      "time": 1775235511,
+      "side": "SELL",
+      "price": 67027.07,
+      "quantity": 0.00024
+    },
+    {
+      "time": 1775235520,
+      "side": "BUY",
+      "price": 67011.54,
+      "quantity": 0.00022
+    },
+    {
+      "time": 1775235600,
+      "side": "SELL",
+      "price": 67011.52,
+      "quantity": 0.00022
+    },
+    {
+      "time": 1775235659,
+      "side": "BUY",
+      "price": 67009.86,
+      "quantity": 0.00019
+    },
+    {
+      "time": 1775235668,
+      "side": "SELL",
+      "price": 66996.72,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775235690,
+      "side": "BUY",
+      "price": 66984.69,
+      "quantity": 0.00009
+    },
+    {
+      "time": 1775236625,
+      "side": "SELL",
+      "price": 66885.05,
+      "quantity": 0.00009
+    },
+    {
+      "time": 1775236632,
+      "side": "BUY",
+      "price": 66868.2,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775236636,
+      "side": "SELL",
+      "price": 66868.21,
+      "quantity": 0.00023
+    },
+    {
+      "time": 1775236644,
+      "side": "BUY",
+      "price": 66865.57,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775236651,
+      "side": "SELL",
+      "price": 66866.99,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775236656,
+      "side": "BUY",
+      "price": 66853.09,
+      "quantity": 0.00017
+    },
+    {
+      "time": 1775236662,
+      "side": "SELL",
+      "price": 66844.94,
+      "quantity": 0.00019
+    },
+    {
+      "time": 1775236670,
+      "side": "BUY",
+      "price": 66838.08,
+      "quantity": 0.00012
+    },
+    {
+      "time": 1775236679,
+      "side": "SELL",
+      "price": 66829.84,
+      "quantity": 0.00012
+    },
+    {
+      "time": 1775236685,
+      "side": "BUY",
+      "price": 66825.69,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775236686,
+      "side": "BUY",
+      "price": 66825.68,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775236695,
+      "side": "SELL",
+      "price": 66829.62,
+      "quantity": 0.00031
+    },
+    {
+      "time": 1775236701,
+      "side": "BUY",
+      "price": 66819.51,
+      "quantity": 0.00018
+    },
+    {
+      "time": 1775236705,
+      "side": "SELL",
+      "price": 66819.5,
+      "quantity": 0.00018
+    },
+    {
+      "time": 1775236711,
+      "side": "BUY",
+      "price": 66804.94,
+      "quantity": 0.00017
+    },
+    {
+      "time": 1775236715,
+      "side": "SELL",
+      "price": 66779.35,
+      "quantity": 0.00019
+    },
+    {
+      "time": 1775236721,
+      "side": "BUY",
+      "price": 66761.49,
+      "quantity": 0.00013
+    },
+    {
+      "time": 1775236722,
+      "side": "BUY",
+      "price": 66771.31,
+      "quantity": 0.00009
+    },
+    {
+      "time": 1775236726,
+      "side": "SELL",
+      "price": 66777.7,
+      "quantity": 0.00024
+    },
+    {
+      "time": 1775236731,
+      "side": "BUY",
+      "price": 66784.75,
+      "quantity": 0.0002
+    },
+    {
+      "time": 1775236780,
+      "side": "SELL",
+      "price": 66797.64,
+      "quantity": 0.0002
+    },
+    {
+      "time": 1775236790,
+      "side": "BUY",
+      "price": 66802.68,
+      "quantity": 0.00027
+    },
+    {
+      "time": 1775236823,
+      "side": "SELL",
+      "price": 66805.48,
+      "quantity": 0.00027
+    },
+    {
+      "time": 1775236834,
+      "side": "BUY",
+      "price": 66802.69,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775237004,
+      "side": "SELL",
+      "price": 66895.07,
+      "quantity": 0.00018
+    },
+    {
+      "time": 1775237009,
+      "side": "BUY",
+      "price": 66909.33,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775237011,
+      "side": "BUY",
+      "price": 66899.34,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775237056,
+      "side": "SELL",
+      "price": 66898.44,
+      "quantity": 0.00029
+    },
+    {
+      "time": 1775237124,
+      "side": "BUY",
+      "price": 66870.03,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775237127,
+      "side": "BUY",
+      "price": 66870.03,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775237129,
+      "side": "SELL",
+      "price": 66860.64,
+      "quantity": 0.00035
+    },
+    {
+      "time": 1775237152,
+      "side": "BUY",
+      "price": 66849.03,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775237298,
+      "side": "SELL",
+      "price": 66868.52,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775237329,
+      "side": "BUY",
+      "price": 66862.98,
+      "quantity": 0.00023
+    },
+    {
+      "time": 1775237335,
+      "side": "SELL",
+      "price": 66861.14,
+      "quantity": 0.00025
+    },
+    {
+      "time": 1775237351,
+      "side": "BUY",
+      "price": 66867.53,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775237538,
+      "side": "SELL",
+      "price": 66938.5,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775237556,
+      "side": "BUY",
+      "price": 66937.98,
+      "quantity": 0.00023
+    },
+    {
+      "time": 1775237696,
+      "side": "SELL",
+      "price": 66895.92,
+      "quantity": 0.00025
+    },
+    {
+      "time": 1775237705,
+      "side": "BUY",
+      "price": 66878.63,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775237718,
+      "side": "SELL",
+      "price": 66880.58,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775237727,
+      "side": "BUY",
+      "price": 66880.57,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775237740,
+      "side": "SELL",
+      "price": 66881.48,
+      "quantity": 0.00023
+    },
+    {
+      "time": 1775237766,
+      "side": "BUY",
+      "price": 66870.72,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775237779,
+      "side": "SELL",
+      "price": 66872.42,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775237796,
+      "side": "BUY",
+      "price": 66872.43,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775237920,
+      "side": "SELL",
+      "price": 66873.46,
+      "quantity": 0.00023
+    },
+    {
+      "time": 1775237945,
+      "side": "BUY",
+      "price": 66863.25,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775237973,
+      "side": "SELL",
+      "price": 66863.17,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775237986,
+      "side": "BUY",
+      "price": 66864.11,
+      "quantity": 0.00018
+    },
+    {
+      "time": 1775238033,
+      "side": "SELL",
+      "price": 66883.96,
+      "quantity": 0.0002
+    },
+    {
+      "time": 1775238081,
+      "side": "BUY",
+      "price": 66868.99,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775238201,
+      "side": "SELL",
+      "price": 66872.88,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775238210,
+      "side": "BUY",
+      "price": 66869.22,
+      "quantity": 0.00018
+    },
+    {
+      "time": 1775238224,
+      "side": "SELL",
+      "price": 66872.95,
+      "quantity": 0.0002
+    },
+    {
+      "time": 1775238243,
+      "side": "BUY",
+      "price": 66872.94,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775238285,
+      "side": "SELL",
+      "price": 66874.31,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775238298,
+      "side": "BUY",
+      "price": 66901.15,
+      "quantity": 0.00023
+    },
+    {
+      "time": 1775238310,
+      "side": "SELL",
+      "price": 66900.02,
+      "quantity": 0.00025
+    },
+    {
+      "time": 1775238370,
+      "side": "BUY",
+      "price": 66874.78,
+      "quantity": 0.00018
+    },
+    {
+      "time": 1775238390,
+      "side": "SELL",
+      "price": 66874.77,
+      "quantity": 0.00018
+    },
+    {
+      "time": 1775238401,
+      "side": "BUY",
+      "price": 66877.77,
+      "quantity": 0.00015
+    },
+    {
+      "time": 1775238414,
+      "side": "SELL",
+      "price": 66877.76,
+      "quantity": 0.00017
+    },
+    {
+      "time": 1775238425,
+      "side": "BUY",
+      "price": 66844.11,
+      "quantity": 0.00009
+    },
+    {
+      "time": 1775238427,
+      "side": "SELL",
+      "price": 66844.1,
+      "quantity": 0.00009
+    },
+    {
+      "time": 1775238452,
+      "side": "BUY",
+      "price": 66830.41,
+      "quantity": 0.00009
+    },
+    {
+      "time": 1775238456,
+      "side": "BUY",
+      "price": 66837.94,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775238457,
+      "side": "SELL",
+      "price": 66822.85,
+      "quantity": 0.00011
+    },
+    {
+      "time": 1775238473,
+      "side": "SELL",
+      "price": 66810.16,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775238480,
+      "side": "BUY",
+      "price": 66812.8,
+      "quantity": 0.00011
+    },
+    {
+      "time": 1775238484,
+      "side": "SELL",
+      "price": 66819.02,
+      "quantity": 0.00012
+    },
+    {
+      "time": 1775238500,
+      "side": "BUY",
+      "price": 66826.65,
+      "quantity": 0.00018
+    },
+    {
+      "time": 1775238565,
+      "side": "SELL",
+      "price": 66837.76,
+      "quantity": 0.0002
+    },
+    {
+      "time": 1775238600,
+      "side": "BUY",
+      "price": 66827.89,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775238609,
+      "side": "SELL",
+      "price": 66817.81,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775238657,
+      "side": "BUY",
+      "price": 66811.71,
+      "quantity": 0.0002
+    },
+    {
+      "time": 1775238792,
+      "side": "SELL",
+      "price": 66841.61,
+      "quantity": 0.00022
+    },
+    {
+      "time": 1775238841,
+      "side": "BUY",
+      "price": 66841.62,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775238934,
+      "side": "SELL",
+      "price": 66840.58,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775238951,
+      "side": "BUY",
+      "price": 66860.64,
+      "quantity": 0.00022
+    },
+    {
+      "time": 1775239120,
+      "side": "SELL",
+      "price": 66863.23,
+      "quantity": 0.00024
+    },
+    {
+      "time": 1775239156,
+      "side": "BUY",
+      "price": 66858.43,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775239197,
+      "side": "SELL",
+      "price": 66858.42,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775239203,
+      "side": "BUY",
+      "price": 66846.31,
+      "quantity": 0.0002
+    },
+    {
+      "time": 1775239206,
+      "side": "BUY",
+      "price": 66846.83,
+      "quantity": 0.00011
+    },
+    {
+      "time": 1775239243,
+      "side": "SELL",
+      "price": 66850.86,
+      "quantity": 0.00034
+    },
+    {
+      "time": 1775239278,
+      "side": "BUY",
+      "price": 66837.24,
+      "quantity": 0.00018
+    },
+    {
+      "time": 1775239400,
+      "side": "SELL",
+      "price": 66848.04,
+      "quantity": 0.00018
+    },
+    {
+      "time": 1775239462,
+      "side": "BUY",
+      "price": 66848.04,
+      "quantity": 0.0002
+    },
+    {
+      "time": 1775239646,
+      "side": "SELL",
+      "price": 66844.51,
+      "quantity": 0.00022
+    },
+    {
+      "time": 1775239683,
+      "side": "BUY",
+      "price": 66820.01,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775239699,
+      "side": "SELL",
+      "price": 66820.01,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775239732,
+      "side": "BUY",
+      "price": 66820.01,
+      "quantity": 0.0001
+    },
+    {
+      "time": 1775239742,
+      "side": "SELL",
+      "price": 66817.8,
+      "quantity": 0.00012
+    },
+    {
+      "time": 1775239772,
+      "side": "BUY",
+      "price": 66809.79,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775239849,
+      "side": "SELL",
+      "price": 66795.13,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775239893,
+      "side": "BUY",
+      "price": 66782.53,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775239908,
+      "side": "SELL",
+      "price": 66787.41,
+      "quantity": 0.00016
+    },
+    {
+      "time": 1775239932,
+      "side": "BUY",
+      "price": 66786.01,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775240025,
+      "side": "SELL",
+      "price": 66820.33,
+      "quantity": 0.00021
+    },
+    {
+      "time": 1775240043,
+      "side": "BUY",
+      "price": 66820.33,
+      "quantity": 0.00025
+    },
+    {
+      "time": 1775240174,
+      "side": "SELL",
+      "price": 66836.48,
+      "quantity": 0.00027
+    },
+    {
+      "time": 1775240193,
+      "side": "BUY",
+      "price": 66822.85,
+      "quantity": 0.00023
+    },
+    {
+      "time": 1775240195,
+      "side": "BUY",
+      "price": 66835.44,
+      "quantity": 0.00009
+    },
+    {
+      "time": 1775240331,
+      "side": "SELL",
+      "price": 66913.49,
+      "quantity": 0.00034
+    },
+    {
+      "time": 1775240344,
+      "side": "BUY",
+      "price": 66917.2,
+      "quantity": 0.00023
+    },
+    {
+      "time": 1775240384,
+      "side": "SELL",
+      "price": 66916.67,
+      "quantity": 0.00023
+    },
+    {
+      "time": 1775240411,
+      "side": "BUY",
+      "price": 66905.98,
+      "quantity": 0.0002
+    },
+    {
+      "time": 1775240496,
+      "side": "SELL",
+      "price": 66910.38,
+      "quantity": 0.00022
+    },
+    {
+      "time": 1775240614,
+      "side": "BUY",
+      "price": 66882.68,
+      "quantity": 0.00023
+    },
+    {
+      "time": 1775240649,
+      "side": "SELL",
+      "price": 66889.25,
+      "quantity": 0.00023
+    },
+    {
+      "time": 1775240670,
+      "side": "BUY",
+      "price": 66904.72,
+      "quantity": 0.00013
+    },
+    {
+      "time": 1775240735,
+      "side": "SELL",
+      "price": 66911.04,
+      "quantity": 0.00014
+    },
+    {
+      "time": 1775240760,
+      "side": "BUY",
+      "price": 66905.16,
+      "quantity": 0.00018
     }
   ],
-  "realizedPnl": 0.08341704213376575,
-  "totalWinningTrades": 138,
-  "totalLosingTrades": 64,
+  "realizedPnl": 0.1404794233976378,
+  "totalWinningTrades": 167,
+  "totalLosingTrades": 96,
   "openPosition": {
-    "entryPrice": 67044.29625,
-    "quantity": 0.00016
+    "entryPrice": 66905.16,
+    "quantity": 0.0002
   }
 }

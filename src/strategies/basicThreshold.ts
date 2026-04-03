@@ -10,12 +10,12 @@ export class BasicThresholdStrategy implements ITradingStrategy {
         this.buyThreshold = buyThreshold;
     }
 
-    async onTick(price: number, exchange: Exchange): Promise<void> {
+    async onTick(price: number, exchange: Exchange, symbol: string): Promise<void> {
         if (!this.hasBought && price < this.buyThreshold) {
             Logger.info(`Price ${price} is below threshold ${this.buyThreshold}. Initiating BUY.`);
             try {
                 // Place a simulated market buy of 0.001 BTC
-                await exchange.placeMarketBuy('BTCUSDT', 0.001);
+                await exchange.placeMarketBuy(symbol, 0.001);
                 this.hasBought = true;
                 Logger.success("BasicThreshold BUY executed.");
             } catch (e) {

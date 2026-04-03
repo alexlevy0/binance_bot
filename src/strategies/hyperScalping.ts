@@ -6,11 +6,12 @@ import { Tracker } from "../core/tracker";
 export class HyperScalpingStrategy implements ITradingStrategy {
     private positionOpen: boolean = false;
     private buyPrice: number = 0;
+    private actualQuantity: number = 0; // Real quantity after commission
     private tradeQuantity: number;
 
     // Profit & Loss Thresholds
-    private minProfitMargin: number; // 1.0002 = 0.02%
-    private stopLossMargin: number;  // 0.9995 = 0.05%
+    private minProfitMargin: number;
+    private stopLossMargin: number;
 
     public latestState: string = "En attente...";
 
@@ -23,7 +24,7 @@ export class HyperScalpingStrategy implements ITradingStrategy {
         this.stopLossMargin = stopLoss;
     }
 
-    async onTick(price: number, exchange: Exchange): Promise<void> {
+    async onTick(price: number, exchange: Exchange, symbol: string): Promise<void> {
         // Mode Pause si un trade a lieu récemment
         if (this.cooldownTicks > 0) {
             this.cooldownTicks--;
@@ -34,11 +35,13 @@ export class HyperScalpingStrategy implements ITradingStrategy {
         if (!this.positionOpen) {
             Logger.success(`⚡ [HyperScalping] Achat Market initié à ${price}`);
             try {
-                await exchange.placeMarketBuy('BTCUSDT', this.tradeQuantity);
+                const result = await exchange.placeMarketBuy(symbol, this.tradeQuantity);
                 this.positionOpen = true;
                 this.buyPrice = price;
-                this.latestState = `Position longue à $${this.buyPrice.toFixed(2)}`;
+                this.actualQuantity = result.actualQuantity; // Use real quantity after fees
+                this.latestState = `Position longue à $${this.buyPrice.toFixed(2)} (qty: ${this.actualQuantity})`;
                 Tracker.addTrade('BUY', price, this.tradeQuantity);
+                Logger.info(`[HyperScalping] Quantité réelle reçue après commission: ${this.actualQuantity}`);
             } catch (e) {
                 Logger.error("Échec de l'achat Scalping");
             }
@@ -50,11 +53,11 @@ export class HyperScalpingStrategy implements ITradingStrategy {
             if (price >= targetProfit) {
                 Logger.success(`🚀 [HyperScalping] Take-Profit (+)! Vente flash à ${price}.`);
                 try {
-                    await exchange.placeMarketSell('BTCUSDT', this.tradeQuantity);
+                    await exchange.placeMarketSell(symbol, this.actualQuantity);
                     this.positionOpen = false;
-                    this.cooldownTicks = 3; // Pause de 6 secondes
+                    this.cooldownTicks = 3;
                     this.latestState = "Profit réussi. Repos.";
-                    Tracker.addTrade('SELL', price, this.tradeQuantity);
+                    Tracker.addTrade('SELL', price, this.actualQuantity);
                 } catch (e) {
                     Logger.error("Échec de la vente Scalping");
                 }
@@ -62,17 +65,16 @@ export class HyperScalpingStrategy implements ITradingStrategy {
             else if (price <= stopLoss) {
                 Logger.warn(`🛑 [HyperScalping] Stop-Loss (-). Vente perte à ${price}.`);
                 try {
-                    await exchange.placeMarketSell('BTCUSDT', this.tradeQuantity);
+                    await exchange.placeMarketSell(symbol, this.actualQuantity);
                     this.positionOpen = false;
-                    this.cooldownTicks = 5; // Longue pause de 10 secondes
+                    this.cooldownTicks = 5;
                     this.latestState = "Pertes protégées. Repos.";
-                    Tracker.addTrade('SELL', price, this.tradeQuantity);
+                    Tracker.addTrade('SELL', price, this.actualQuantity);
                 } catch (e) {
                     Logger.error("Échec de la vente Scalping");
                 }
             }
             else {
-                // Affiche les prix exacts d'attente à l'utilisateur sur le Dashboard !
                 this.latestState = `Attente Cible: ${targetProfit.toFixed(2)} | Stop: ${stopLoss.toFixed(2)}`;
             }
         }

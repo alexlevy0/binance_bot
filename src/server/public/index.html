@@ -152,7 +152,9 @@
 <body>
     <div class="header">
         <div style="display: flex; align-items: center;">
-            <h1>📊 Pro Terminal</h1>
+            <h1>📊 Pro Terminal<span id="env-badge"
+                    style="font-size: 0.8rem; margin-left:15px; padding: 2px 8px; border-radius: 4px; background: #22c55e; color:#000; vertical-align: middle;">DEMO</span>
+            </h1>
             <span id="symbol-display"
                 style="color: #fff; font-weight:300; font-size:1.2rem; margin-left:15px; margin-right:20px;">...</span>
             <select id="interval-select"
@@ -180,6 +182,12 @@
             </div>
             <div class="stat-card"><span>Strategy Status</span>
                 <div class="val log-INFO" id="val-state" style="font-size: 0.95rem;">...</div>
+            </div>
+            <div class="stat-card"><span>💰 BTC</span>
+                <div class="val" id="val-btc" style="color: #f7931a;">...</div>
+            </div>
+            <div class="stat-card"><span>💵 USDC</span>
+                <div class="val" id="val-usdc" style="color: #2775ca;">...</div>
             </div>
         </div>
     </div>
@@ -211,6 +219,7 @@
             upColor: '#4ade80', downColor: '#f87171', borderVisible: false, wickUpColor: '#4ade80', wickDownColor: '#f87171'
         });
 
+        let currentCandles = [];
         let lastTradeCount = 0;
 
         async function initChart() {
@@ -219,7 +228,9 @@
                 const res = await fetch(`/api/chart?interval=${interval}`);
                 const data = await res.json();
                 if (data && data.length > 0) {
+                    currentCandles = data;
                     candleSeries.setData(data);
+                    lastTradeCount = -1; // Force marker redraw
                 }
             } catch (e) { console.error('Chart Data Error:', e); }
         }
@@ -231,6 +242,17 @@
 
                 document.getElementById('symbol-display').innerText = data.symbol;
 
+                const envBadge = document.getElementById('env-badge');
+                if (data.isLive) {
+                    envBadge.innerText = 'LIVE';
+                    envBadge.style.background = '#ef4444'; // Red target 
+                    envBadge.style.color = '#fff';
+                } else {
+                    envBadge.innerText = 'DEMO';
+                    envBadge.style.background = '#22c55e'; // Green baseline
+                    envBadge.style.color = '#000';
+                }
+
                 const priceNum = parseFloat(data.price);
                 document.getElementById('val-price').innerText = priceNum ? '$' + priceNum.toLocaleString(undefined, { minimumFractionDigits: 2 }) : '...';
 
@@ -240,6 +262,8 @@
 
                 document.getElementById('val-winrate').innerText = data.winRate.toFixed(1) + '% (' + data.totalTrades + ')';
                 document.getElementById('val-state').innerText = data.state;
+                document.getElementById('val-btc').innerText = data.balanceBTC !== undefined ? data.balanceBTC.toFixed(8) : '...';
+                document.getElementById('val-usdc').innerText = data.balanceQuote !== undefined ? '$' + data.balanceQuote.toFixed(2) : '...';
 
                 // Render Logs Box
                 const logsBox = document.getElementById('logs-box');
@@ -258,18 +282,37 @@
                 const trades = await res.json();
 
                 // If trade count changed, redraw markers to avoid heavy repaints
-                if (trades.length !== lastTradeCount) {
+                if (trades.length !== lastTradeCount && currentCandles.length > 0) {
                     lastTradeCount = trades.length;
 
-                    // Render trade markers on chart exactly on Candles
-                    const markers = trades.map(t => ({
-                        time: t.time, position: t.side === 'BUY' ? 'belowBar' : 'aboveBar',
-                        color: t.side === 'BUY' ? '#4ade80' : '#f87171', shape: t.side === 'BUY' ? 'arrowUp' : 'arrowDown',
-                        text: t.side + ' @ ' + t.price
-                    }));
-                    // Set markers must be sorted inherently
-                    markers.sort((a, b) => a.time - b.time);
-                    candleSeries.setMarkers(markers);
+                    const markers = [];
+                    trades.forEach(t => {
+                        // Snap trade time to the exact candle time
+                        let snappedTime = currentCandles[0].time;
+                        for (let i = 0; i < currentCandles.length; i++) {
+                            if (currentCandles[i].time <= t.time) snappedTime = currentCandles[i].time;
+                            else break;
+                        }
+                        markers.push({
+                            time: snappedTime, position: t.side === 'BUY' ? 'belowBar' : 'aboveBar',
+                            color: t.side === 'BUY' ? '#4ade80' : '#f87171', shape: t.side === 'BUY' ? 'arrowUp' : 'arrowDown',
+                            text: t.side + ' @ ' + t.price
+                        });
+                    });
+
+                    // Set markers must be sorted inherently and grouped by time to avoid TV crashes
+                    const uniqueMarkers = [];
+                    const timeMap = new Set();
+                    markers.sort((a, b) => a.time - b.time).forEach(m => {
+                        if (!timeMap.has(m.time)) {
+                            uniqueMarkers.push(m);
+                            timeMap.add(m.time);
+                        } else {
+                            const existing = uniqueMarkers.find(x => x.time === m.time);
+                            existing.text += ' & ' + m.text;
+                        }
+                    });
+                    candleSeries.setMarkers(uniqueMarkers);
 
                     // Render textual list in the side panel
                     const tradesBox = document.getElementById('trades-box');
@@ -291,9 +334,9 @@
         // Orchestration Execution
         initChart().then(() => {
             fetchStatus(); fetchTrades();
-            setInterval(fetchStatus, 2000);
+            setInterval(fetchStatus, 1000);
             setInterval(initChart, 2000); // Dynamic polling
-            setInterval(fetchTrades, 3000); // Check trades frequently
+            setInterval(fetchTrades, 2000); // Check trades frequently
         });
 
         // Responsive Resize Logic

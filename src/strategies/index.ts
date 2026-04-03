@@ -6,5 +6,5 @@ export interface ITradingStrategy {
      * @param price Current price of the asset
      * @param exchange Instance of the exchange client for placing orders
      */
-    onTick(price: number, exchange: Exchange): Promise<void>;
+    onTick(price: number, exchange: Exchange, symbol: string): Promise<void>;
 }

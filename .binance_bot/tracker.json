@@ -1,50 +1,86 @@
 {
   "trades": [
     {
-      "time": 1775214519,
+      "time": 1775224105,
       "side": "BUY",
-      "price": 66867.31,
-      "quantity": 0.001
+      "price": 66560.76,
+      "quantity": 0.00008
     },
     {
-      "time": 1775214845,
+      "time": 1775224596,
+      "side": "BUY",
+      "price": 66637.89,
+      "quantity": 0.00008
+    },
+    {
+      "time": 1775224734,
+      "side": "BUY",
+      "price": 66678.1,
+      "quantity": 0.0001
+    },
+    {
+      "time": 1775224930,
       "side": "SELL",
-      "price": 66833.69,
-      "quantity": 0.001
+      "price": 66638.17,
+      "quantity": 0.00009
     },
     {
-      "time": 1775214847,
+      "time": 1775224942,
       "side": "BUY",
-      "price": 66833.68,
-      "quantity": 0.001
+      "price": 66637.4,
+      "quantity": 0.0001
     },
     {
-      "time": 1775214909,
+      "time": 1775224944,
       "side": "SELL",
-      "price": 66858.9,
-      "quantity": 0.001
+      "price": 66653.54,
+      "quantity": 0.00009
     },
     {
-      "time": 1775214911,
+      "time": 1775224952,
       "side": "BUY",
-      "price": 66860.62,
-      "quantity": 0.001
+      "price": 66680.45,
+      "quantity": 0.0001
     },
     {
-      "time": 1775215009,
+      "time": 1775225008,
       "side": "SELL",
-      "price": 66875.47,
-      "quantity": 0.001
+      "price": 66694.37,
+      "quantity": 0.00009
     },
     {
-      "time": 1775215011,
+      "time": 1775225016,
       "side": "BUY",
-      "price": 66877.99,
-      "quantity": 0.001
+      "price": 66706.18,
+      "quantity": 0.0001
+    },
+    {
+      "time": 1775225032,
+      "side": "SELL",
+      "price": 66719.85,
+      "quantity": 0.00009
+    },
+    {
+      "time": 1775225040,
+      "side": "BUY",
+      "price": 66741.21,
+      "quantity": 0.0001
+    },
+    {
+      "time": 1775225051,
+      "side": "SELL",
+      "price": 66756.93,
+      "quantity": 0.00009
+    },
+    {
+      "time": 1775225055,
+      "side": "BUY",
+      "price": 66764.42,
+      "quantity": 0.0001
     }
   ],
-  "realizedPnl": 0.006450000000011644,
-  "totalWinningTrades": 2,
+  "realizedPnl": 0.001756799999999057,
+  "totalWinningTrades": 4,
   "totalLosingTrades": 1,
-  "lastBuyPrice": 66877.99
+  "lastBuyPrice": 66764.42
 }

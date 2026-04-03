@@ -70,7 +70,20 @@ export class Exchange {
     async placeMarketBuy(symbol: string, quantity: number) {
         try {
             const response = await this.client.newOrder(symbol, 'BUY', 'MARKET', { quantity });
-            return response.data;
+            const data = response.data;
+            // Extract actually filled quantity after commission
+            let filledQty = parseFloat(data.executedQty || quantity);
+            if (data.fills && data.fills.length > 0) {
+                const totalCommission = data.fills.reduce((sum: number, f: any) => sum + parseFloat(f.commission || '0'), 0);
+                const commissionAsset = data.fills[0]?.commissionAsset;
+                // If commission is taken from the bought asset (BTC), subtract it
+                if (commissionAsset === symbol.replace(/USDC|USDT|BUSD|EUR/, '')) {
+                    filledQty -= totalCommission;
+                }
+            }
+            // Floor to 5 decimal places (Binance stepSize for BTC)
+            filledQty = Math.floor(filledQty * 100000) / 100000;
+            return { ...data, actualQuantity: filledQty };
         } catch (error: any) {
             Logger.error(`Buy Order Failed for ${symbol}`, error?.response?.data || error.message);
             throw error;

@@ -6,7 +6,7 @@ import { HyperScalpingStrategy } from './src/strategies/hyperScalping';
 import { startDashboard } from './src/server';
 
 async function main() {
-    Logger.info("🚀 Initializing Scalable Binance Spot Trading Bot...");
+    Logger.info(`🚀 Initializing Scalable Binance Spot Trading Bot in ${config.isLive ? '🔴 LIVE' : '🟢 DEMO'} mode...`);
 
     const exchange = new Exchange(config.apiKey, config.secretKey, config.baseURL);
 
@@ -27,7 +27,8 @@ async function main() {
 
         // Register the High-Frequency Scalping Strategy ! 🚀
         // Ex: Achete de suite, et revend pour 0.02% de profit, ou coupe à 0.05% de perte
-        bot.registerStrategy(new HyperScalpingStrategy(0.001, 1.0002, 0.9995));
+        // 0.0001 BTC (~6.6 USDC) - après commission (~0.00009 BTC) la valeur reste > 5$ NOTIONAL
+        bot.registerStrategy(new HyperScalpingStrategy(0.0001, 1.0002, 0.9995));
 
         // Boot natively isolated UI Dashboard ⚡
         startDashboard(bot, 3000);

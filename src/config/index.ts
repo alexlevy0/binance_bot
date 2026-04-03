@@ -1,9 +1,12 @@
+const isLive = process.argv.includes('--live');
+
 export const config = {
-    apiKey: process.env.API_KEY_DEMO || '',
-    secretKey: process.env.SECRET_KEY_DEMO || '',
-    baseURL: process.env.BASE_URL || 'https://testnet.binance.vision',
-    defaultPair: 'BTCUSDT',
-    pollingIntervalMs: 2000,
+    isLive,
+    apiKey: isLive ? (process.env.API_KEY || '') : (process.env.API_KEY_DEMO || ''),
+    secretKey: isLive ? (process.env.SECRET_KEY || '') : (process.env.SECRET_KEY_DEMO || ''),
+    baseURL: isLive ? 'https://api.binance.com' : (process.env.BASE_URL || 'https://testnet.binance.vision'),
+    defaultPair: 'BTCUSDC',
+    pollingIntervalMs: 1000,
 };
 
 if (!config.apiKey || !config.secretKey) {

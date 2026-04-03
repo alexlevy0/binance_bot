@@ -2,6 +2,7 @@ import { Logger } from "../utils/logger";
 import { TradingBot } from "../bot";
 import { HyperScalpingStrategy } from "../strategies/hyperScalping";
 import { Tracker } from "../core/tracker";
+import { config } from "../config";
 
 export function startDashboard(bot: TradingBot, port: number = 3000) {
     Bun.serve({
@@ -80,7 +81,10 @@ export function startDashboard(bot: TradingBot, port: number = 3000) {
                     pnl: Tracker.realizedPnl,
                     winRate: Tracker.getWinRate(),
                     totalTrades: Tracker.getTotalTrades(),
-                    logs: Logger.logs
+                    balanceBTC: bot.balanceBTC,
+                    balanceQuote: bot.balanceQuote,
+                    logs: Logger.logs,
+                    isLive: config.isLive
                 };
 
                 return new Response(JSON.stringify(data), {

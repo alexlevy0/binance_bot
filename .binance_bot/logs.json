@@ -1,5 +1,15 @@
 [
   {
+    "timestamp": "2026-04-03T18:39:07.288Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,885.81 | BTC: 0.00020121 | USDC: $9.78"
+  },
+  {
+    "timestamp": "2026-04-03T18:39:02.295Z",
+    "type": "INFO",
+    "message": "BTCUSDC Price: $66,885.81 | BTC: 0.00020121 | USDC: $9.78"
+  },
+  {
     "timestamp": "2026-04-03T18:38:58.218Z",
     "type": "SUCCESS",
     "message": "✅ WebSocket connected — Real-time data active"
@@ -988,15 +998,5 @@
     "timestamp": "2026-04-03T18:16:01.818Z",
     "type": "INFO",
     "message": "BTCUSDC Price: $66,836.5 | BTC: 0.00027251 | USDC: $5.00"
-  },
-  {
-    "timestamp": "2026-04-03T18:15:56.818Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,843.51 | BTC: 0.00027251 | USDC: $5.00"
-  },
-  {
-    "timestamp": "2026-04-03T18:15:51.818Z",
-    "type": "INFO",
-    "message": "BTCUSDC Price: $66,843.51 | BTC: 0.00027251 | USDC: $5.00"
   }
 ]

@@ -3311,13 +3311,33 @@
       "side": "BUY",
       "price": 66905.16,
       "quantity": 0.00018
+    },
+    {
+      "time": 1775241578,
+      "side": "SELL",
+      "price": 66875.76,
+      "quantity": 0.0002,
+      "reason": "absorption_exit",
+      "marketRegime": "BALANCED",
+      "conviction": 0,
+      "entryPrice": 66905.16,
+      "pnlQuote": -0.005880000000001747,
+      "pnlPct": -0.043942799030760454,
+      "netPnlQuote": -0.023857627486588213,
+      "holdDurationSec": 0,
+      "estimatedFeesQuote": 0.013375152,
+      "estimatedSlippageQuote": 0.004602475486586466
     }
   ],
-  "realizedPnl": 0.1404794233976378,
+  "realizedPnl": 0.13459942339763606,
   "totalWinningTrades": 167,
-  "totalLosingTrades": 96,
-  "openPosition": {
-    "entryPrice": 66905.16,
-    "quantity": 0.0002
-  }
+  "totalLosingTrades": 97,
+  "estimatedFeesQuoteTotal": 0.013375152,
+  "estimatedSlippageQuoteTotal": 0.004602475486586466,
+  "closedTradeHoldDurationSecTotal": 0,
+  "closedTradesCount": 1,
+  "exitReasonCounts": {
+    "absorption_exit": 1
+  },
+  "openPosition": null
 }

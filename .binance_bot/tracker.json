@@ -1,0 +1,38 @@
+{
+  "trades": [
+    {
+      "time": 1775214519,
+      "side": "BUY",
+      "price": 66867.31,
+      "quantity": 0.001
+    },
+    {
+      "time": 1775214845,
+      "side": "SELL",
+      "price": 66833.69,
+      "quantity": 0.001
+    },
+    {
+      "time": 1775214847,
+      "side": "BUY",
+      "price": 66833.68,
+      "quantity": 0.001
+    },
+    {
+      "time": 1775214909,
+      "side": "SELL",
+      "price": 66858.9,
+      "quantity": 0.001
+    },
+    {
+      "time": 1775214911,
+      "side": "BUY",
+      "price": 66860.62,
+      "quantity": 0.001
+    }
+  ],
+  "realizedPnl": -0.008399999999994176,
+  "totalWinningTrades": 1,
+  "totalLosingTrades": 1,
+  "lastBuyPrice": 66860.62
+}

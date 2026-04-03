@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Binance Pro Terminal</title>
+    <!-- TradingView Lightweight Charts natively injected via CDN -->
+    <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #fff;
+            height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #38bdf8;
+            font-size: 1.5rem;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-card span {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            display: block;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .val {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .positive {
+            color: #4ade80;
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.2);
+        }
+
+        .negative {
+            color: #f87171;
+            text-shadow: 0 0 10px rgba(248, 113, 113, 0.2);
+        }
+
+        .main-layout {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .chart-container {
+            flex: 2;
+            background: #1e293b;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-height: 0;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .panel h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            color: #cbd5e1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .logs {
+            flex: 1;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+            min-height: 0;
+        }
+
+        .log-row {
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            padding-bottom: 4px;
+        }
+
+        .log-time {
+            color: #64748b;
+            margin-right: 8px;
+        }
+
+        .log-INFO {
+            color: #cbd5e1;
+        }
+
+        .log-SUCCESS {
+            color: #4ade80;
+        }
+
+        .log-WARN {
+            color: #facc15;
+        }
+
+        .log-ERROR {
+            color: #f87171;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div style="display: flex; align-items: center;">
+            <h1>📊 Pro Terminal</h1>
+            <span id="symbol-display"
+                style="color: #fff; font-weight:300; font-size:1.2rem; margin-left:15px; margin-right:20px;">...</span>
+            <select id="interval-select"
+                style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 5px 10px; border-radius: 6px; outline: none; font-family: 'Inter', sans-serif;">
+                <option value="1s" selected style="color: #000;">1s</option>
+                <option value="10s" style="color: #000;">10s</option>
+                <option value="15s" style="color: #000;">15s</option>
+                <option value="30s" style="color: #000;">30s</option>
+                <option value="45s" style="color: #000;">45s</option>
+                <option value="1m" style="color: #000;">1m</option>
+                <option value="5m" style="color: #000;">5m</option>
+                <option value="15m" style="color: #000;">15m</option>
+                <option value="1h" style="color: #000;">1h</option>
+            </select>
+        </div>
+        <div class="stats-bar">
+            <div class="stat-card"><span>Current Price</span>
+                <div class="val" id="val-price">...</div>
+            </div>
+            <div class="stat-card"><span>Total PnL</span>
+                <div class="val" id="val-pnl">...</div>
+            </div>
+            <div class="stat-card"><span>Win Rate</span>
+                <div class="val" id="val-winrate">...</div>
+            </div>
+            <div class="stat-card"><span>Strategy Status</span>
+                <div class="val log-INFO" id="val-state" style="font-size: 0.95rem;">...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-layout">
+        <!-- Interactive TradingView Chart injected here -->
+        <div class="chart-container" id="tvchart"></div>
+        <div class="sidebar">
+            <div class="panel" style="flex: 1;">
+                <h3>System Logs</h3>
+                <div class="logs" id="logs-box"></div>
+            </div>
+            <div class="panel" style="flex: 0.5;">
+                <h3>Recent Trades</h3>
+                <div class="logs" id="trades-box"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Init Lightweight Charts
+        const chartElement = document.getElementById('tvchart');
+        const chart = LightweightCharts.createChart(chartElement, {
+            layout: { background: { type: 'solid', color: '#1e293b' }, textColor: '#cbd5e1' },
+            grid: { vertLines: { color: 'rgba(255, 255, 255, 0.05)' }, horzLines: { color: 'rgba(255, 255, 255, 0.05)' } },
+            timeScale: { timeVisible: true, secondsVisible: false }
+        });
+        const candleSeries = chart.addCandlestickSeries({
+            upColor: '#4ade80', downColor: '#f87171', borderVisible: false, wickUpColor: '#4ade80', wickDownColor: '#f87171'
+        });
+
+        let lastTradeCount = 0;
+
+        async function initChart() {
+            try {
+                const interval = document.getElementById('interval-select').value;
+                const res = await fetch(`/api/chart?interval=${interval}`);
+                const data = await res.json();
+                if (data && data.length > 0) {
+                    candleSeries.setData(data);
+                }
+            } catch (e) { console.error('Chart Data Error:', e); }
+        }
+
+        async function fetchStatus() {
+            try {
+                const res = await fetch('/api/status');
+                const data = await res.json();
+
+                document.getElementById('symbol-display').innerText = data.symbol;
+
+                const priceNum = parseFloat(data.price);
+                document.getElementById('val-price').innerText = priceNum ? '$' + priceNum.toLocaleString(undefined, { minimumFractionDigits: 2 }) : '...';
+
+                const pnlBox = document.getElementById('val-pnl');
+                pnlBox.innerText = (data.pnl >= 0 ? '+' : '') + data.pnl.toFixed(4) + ' $';
+                pnlBox.className = 'val ' + (data.pnl >= 0 ? 'positive' : 'negative');
+
+                document.getElementById('val-winrate').innerText = data.winRate.toFixed(1) + '% (' + data.totalTrades + ')';
+                document.getElementById('val-state').innerText = data.state;
+
+                // Render Logs Box
+                const logsBox = document.getElementById('logs-box');
+                logsBox.innerHTML = '';
+                data.logs.forEach(log => {
+                    const div = document.createElement('div'); div.className = 'log-row';
+                    div.innerHTML = `<span class="log-time">[${new Date(log.timestamp).toLocaleTimeString()}]</span> <span class="log-${log.type}">${log.message}</span>`;
+                    logsBox.appendChild(div);
+                });
+            } catch (e) { console.error('Status Error'); }
+        }
+
+        async function fetchTrades() {
+            try {
+                const res = await fetch('/api/trades');
+                const trades = await res.json();
+
+                // If trade count changed, redraw markers to avoid heavy repaints
+                if (trades.length !== lastTradeCount) {
+                    lastTradeCount = trades.length;
+
+                    // Render trade markers on chart exactly on Candles
+                    const markers = trades.map(t => ({
+                        time: t.time, position: t.side === 'BUY' ? 'belowBar' : 'aboveBar',
+                        color: t.side === 'BUY' ? '#4ade80' : '#f87171', shape: t.side === 'BUY' ? 'arrowUp' : 'arrowDown',
+                        text: t.side + ' @ ' + t.price
+                    }));
+                    // Set markers must be sorted inherently
+                    markers.sort((a, b) => a.time - b.time);
+                    candleSeries.setMarkers(markers);
+
+                    // Render textual list in the side panel
+                    const tradesBox = document.getElementById('trades-box');
+                    tradesBox.innerHTML = '';
+                    [...trades].reverse().forEach(t => {
+                        const div = document.createElement('div'); div.className = 'log-row';
+                        const color = t.side === 'BUY' ? 'positive' : 'negative';
+                        div.innerHTML = `<span class="log-time">[${new Date(t.time * 1000).toLocaleTimeString()}]</span> <span class="${color}">${t.side}</span> ${t.quantity} @ $${t.price}`;
+                        tradesBox.appendChild(div);
+                    });
+                }
+            } catch (e) { console.error('Trades Error'); }
+        }
+
+        document.getElementById('interval-select').addEventListener('change', () => {
+            initChart(); // Immediately refresh on change
+        });
+
+        // Orchestration Execution
+        initChart().then(() => {
+            fetchStatus(); fetchTrades();
+            setInterval(fetchStatus, 2000);
+            setInterval(initChart, 2000); // Dynamic polling
+            setInterval(fetchTrades, 3000); // Check trades frequently
+        });
+
+        // Responsive Resize Logic
+        window.addEventListener('resize', () => {
+            chart.applyOptions({ width: chartElement.clientWidth, height: chartElement.clientHeight });
+        });
+    </script>
+</body>
+
+</html>

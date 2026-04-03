@@ -1,0 +1,1002 @@
+[
+  {
+    "timestamp": "2026-04-03T11:15:11.673Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged BUY Trade at $66860.62"
+  },
+  {
+    "timestamp": "2026-04-03T11:15:11.429Z",
+    "type": "SUCCESS",
+    "message": "⚡ [HyperScalping] Opportunité détectée ! Achat Market à 66860.62"
+  },
+  {
+    "timestamp": "2026-04-03T11:15:11.428Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.62"
+  },
+  {
+    "timestamp": "2026-04-03T11:15:09.747Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged SELL Trade at $66858.9"
+  },
+  {
+    "timestamp": "2026-04-03T11:15:09.420Z",
+    "type": "SUCCESS",
+    "message": "🚀 [HyperScalping] Take-Profit atteint (+)! Revente quasi-instantanée à 66858.9."
+  },
+  {
+    "timestamp": "2026-04-03T11:15:09.419Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66858.9"
+  },
+  {
+    "timestamp": "2026-04-03T11:15:07.421Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:15:05.424Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66841.99"
+  },
+  {
+    "timestamp": "2026-04-03T11:15:03.499Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:15:01.450Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:59.419Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:57.456Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:55.417Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:53.414Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:51.516Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:49.447Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:47.407Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:45.406Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:43.412Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66834.21"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:41.406Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66834.21"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:39.410Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66834.21"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:37.483Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66834.21"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:35.416Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66834.21"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:33.412Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:31.438Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:29.493Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:27.445Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:25.499Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:23.408Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:21.404Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:19.409Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:17.405Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:15.419Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:13.515Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:11.400Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:09.451Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:07.630Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged BUY Trade at $66833.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:07.398Z",
+    "type": "SUCCESS",
+    "message": "⚡ [HyperScalping] Opportunité détectée ! Achat Market à 66833.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:07.398Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:05.675Z",
+    "type": "INFO",
+    "message": "[Tracker] System Logged SELL Trade at $66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:05.407Z",
+    "type": "WARN",
+    "message": "🛑 [HyperScalping] Stop-Loss atteint (-). Vente de sécurité à 66833.69."
+  },
+  {
+    "timestamp": "2026-04-03T11:14:05.406Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66833.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:03.397Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66840.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:14:01.412Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:59.405Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:57.399Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:55.402Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:53.401Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:51.833Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:49.398Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:47.500Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:45.393Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66848.35"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:43.392Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:41.396Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:39.510Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:37.554Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:35.414Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:33.392Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:31.390Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:29.400Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:27.388Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:25.398Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:23.398Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:21.483Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:19.399Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:17.442Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:15.440Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:13.397Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:11.399Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:09.389Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:07.391Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:05.393Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:03.397Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:13:01.390Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:59.387Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:57.396Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:55.466Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:53.417Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:51.471Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:49.389Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:47.477Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:45.382Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:43.377Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:41.388Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:39.384Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:37.381Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:35.383Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:33.374Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:31.372Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:29.425Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:27.375Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:25.379Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:23.809Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:21.366Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:19.372Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:17.376Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:15.375Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:13.374Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:11.372Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:09.383Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:07.366Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:05.363Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:03.359Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:12:01.361Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:59.354Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:57.361Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:55.456Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.02"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:53.362Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:51.358Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:49.356Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:47.367Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:45.346Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:43.349Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:41.427Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:39.348Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:37.436Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66854.01"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:35.354Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66863.34"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:33.348Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66863.34"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:31.356Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66863.34"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:29.348Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:27.352Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:25.341Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:23.338Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:21.340Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:19.344Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:17.346Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:15.334Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:13.337Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:11.424Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:09.376Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:07.327Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:05.332Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:03.437Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:11:01.389Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:59.331Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:57.329Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:55.329Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:53.325Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:51.353Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:49.324Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:47.331Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:45.329Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:43.366Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66864.66"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:41.421Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66861.16"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:39.328Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.63"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:37.329Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:35.323Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:33.329Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:31.328Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.63"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:29.328Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:27.334Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:25.343Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.63"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:23.333Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.63"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:21.332Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.63"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:19.404Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.63"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:17.357Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.63"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:15.411Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.63"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:13.324Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.63"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:11.417Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.63"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:09.323Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.63"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:07.389Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66860.45"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:05.391Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:03.327Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:10:01.326Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:59.334Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.63"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:57.389Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:55.327Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:53.319Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:51.329Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:49.401Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:47.393Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:45.325Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:43.359Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:41.414Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:39.320Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.63"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:37.421Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.63"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:35.326Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66842.64"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:33.322Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66853.7"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:31.317Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66853.7"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:29.316Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66853.69"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:27.326Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66853.7"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:25.319Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66853.7"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:23.319Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66853.7"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:21.326Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66853.7"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:19.380Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66850.2"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:17.332Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66850.2"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:15.320Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:13.314Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:11.318Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:09.322Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.67"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:07.443Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:05.363Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66849.68"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:03.320Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66861.61"
+  },
+  {
+    "timestamp": "2026-04-03T11:09:01.318Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66862.93"
+  },
+  {
+    "timestamp": "2026-04-03T11:08:59.430Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66862.93"
+  },
+  {
+    "timestamp": "2026-04-03T11:08:57.319Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66862.93"
+  },
+  {
+    "timestamp": "2026-04-03T11:08:55.320Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66862.93"
+  },
+  {
+    "timestamp": "2026-04-03T11:08:53.323Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66862.93"
+  },
+  {
+    "timestamp": "2026-04-03T11:08:51.339Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66862.93"
+  },
+  {
+    "timestamp": "2026-04-03T11:08:49.395Z",
+    "type": "INFO",
+    "message": "BTCUSDT Price: 66862.94"
+  }
+]
